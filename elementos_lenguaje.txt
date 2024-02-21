@@ -28,3 +28,4 @@ preguntar aruitectura de afd convinado con condiciones para indentificar los tok
 
 Errores lexicos especiales
 $       ?       `
+https://www.utf8-chartable.de/
