@@ -1,6 +1,27 @@
 import os
 import re
 
+class AFD:
+    def __init__(self, states, alphabet, initial_state, accepting_states, transitions):
+        self.states = states
+        self.alphabet = alphabet
+        self.initial_state = initial_state
+        self.accepting_states = accepting_states
+        self.transitions = transitions
+
+    def run(self, input_string):
+        current_state = self.initial_state
+        for symbol in input_string:
+            next_state = None
+            for transition_pattern, next_state_value in self.transitions.items():
+                if re.match(transition_pattern, symbol):
+                    next_state = next_state_value
+                    break
+            if next_state is None:
+                return False
+            current_state = next_state
+        return current_state in self.accepting_states
+
 def read_file(file_name):
     """
     Read the contents of a Python file and return a list of lines.
@@ -26,6 +47,7 @@ def read_file(file_name):
     except FileNotFoundError:
         print(f"Error: File '{file_name}' not found.")
         return []
+    
 def format_token(token):
     """
     Format a token into a string representation.
@@ -82,6 +104,21 @@ def main():
     """
     Main function to execute the program.
     """
+    # Example usage:
+    states = {'q0', 'q1', 'q2','q3', 'q4', 'q5'}
+    alphabet = {r'\p{L}\p{N}'}
+    initial_state = 'q0'
+    accepting_states = {'q3','q4','q5'}
+    transitions = {
+        r'\p{N}': 'q1',  # Any digit transitions to q1
+        r'\p{L}': 'q2'      # Digit 1 transitions to q2
+    }
+
+    afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
+
+    input_string = '101'
+    print(afd.run(input_string))  # Output: True
+    
     tokens = [
     ('IDENTIFIER', 'variable', 1, 1),
     ('ASSIGNMENT_OPERATOR', '=', 1, 10),
