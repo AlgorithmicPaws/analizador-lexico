@@ -9,58 +9,52 @@ class AFD:
         self.transitions = transitions
 
     def run(self, input_string):
-
         current_state = self.initial_state
         print(current_state)
-        row, column = 1, 1
-        expression = ''  # Variable to store the valid expression
+        row, column = 1, 0
+        expression = ''
         print(input_string)
+
         for index, symbol in enumerate(input_string):
             print(index)
-            print(symbol)
 
-
+            print('simbol'+symbol)
             if symbol == '\n':
                 row += 1
                 column = 1
-            elif not re.match(r'\s', symbol):
+            else:
                 column += 1
-            
-            print('a')
             if not self.alphabet.match(symbol):
                 print('Lexical error at row:', row, 'column:', column)
                 return False
-            print('b')
 
             next_state = None
             for transition, state in self.transitions.items():
-                print(self.transitions.items())
-                print('c')
-                print(current_state)
-                print(re.match(transition[1], symbol))
                 if transition[0] == current_state and re.match(transition[1], symbol):
-
                     print(state)
-                    expression += symbol
+
+                    if not re.match(r'\s', symbol):
+                        expression += symbol
+
                     if len(expression) == 1:
                         expression_start_row = row
                         expression_start_column = column
                     next_state = state
 
                     break
-            print('c')
             if next_state is None:
                 print('Lexical a error at row:', row, 'column:', column)
                 return False
             
             current_state = next_state
-            if current_state in self.accepting_states:
-                # Call the tokenizer function when an accepting state is reached
+            if index == len(input_string) - 1:
                 self.tokenizer(expression, expression_start_row, expression_start_column)
-                
-                self.run(input_string[index:])
-                # Reset the expression and starting position
-                
+
+            elif current_state in self.accepting_states:
+                self.tokenizer(expression, expression_start_row, expression_start_column)
+                expression = ''
+                current_state = self.initial_state
+        print(current_state)
         return current_state in self.accepting_states
         
     
@@ -76,12 +70,11 @@ esp_characters_list = ['/','%','@','<','>','&','|','^','~',':','=','!','(',')','
 unique_characters_list = ['(',')','[',']','{','}',';','.','~']
 initial_compouse_character_list = ['%','@','&','|','^',':','=','!',':','-','+','*']
 regex_esp_characters =  create_regex_from_list(esp_characters_list)
-# Compile the regular expression for the alphabet
+
 alphabet = re.compile(r'[\w\s]|[' + regex_esp_characters + ']')
-unique_character = re.compile(r'' + create_regex_from_list(unique_characters_list))
+unique_character = re.compile(r'[' + create_regex_from_list(unique_characters_list) + ']')
 initial_compouse_character = re.compile(r'' + create_regex_from_list(initial_compouse_character_list))
 
-# Define transitions using strings instead of regular expression objects
 transitions = {('q0', r'\d'): 'q1',    
               ('q0', r'[a-zA-Z]'): 'q2',
               ('q0', initial_compouse_character): 'q5',
@@ -118,9 +111,8 @@ transitions = {('q0', r'\d'): 'q1',
 states = {'q0','q1','q2','q3','q4','q5','q6', 'q7', 'q8', 'q9', 'q10', 'q11','q12', 'q13', 'q14','q15', 'q16','q17', 'q18'}
 initial_state = 'q0'
 accepting_states = {'q3', 'q4', 'q13','q15', 'q16', 'q17', 'q18'}
-
 afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
 
-input_string = "mondongo_23.234 "
+input_string = "mondongo_23 21 "
 
 print(afd.run(input_string))
