@@ -29,8 +29,9 @@ class AFD:
                 return False
 
             next_state = None
-            for transition, state in self.transitions.items():
+            for transition in self.transitions:
                 if transition[0] == current_state and re.match(transition[1], symbol):
+                    state = transition[2]
                     print(state)
 
                     if not re.match(r'\s', symbol):
@@ -67,7 +68,7 @@ def create_regex_from_list(characters):
     return regex
     
 esp_characters_list = ['/','%','@','<','>','&','|','^','~',':','=','!','(',')','[',']','{','}',';',':','.','-','+','*']
-unique_characters_list = ['(',')','[',']','{','}',';','.','~']
+unique_characters_list = ['(',')','[',']','{','}',';','~']
 initial_compouse_character_list = ['%','@','&','|','^',':','=','!',':','-','+','*']
 regex_esp_characters =  create_regex_from_list(esp_characters_list)
 
@@ -75,44 +76,48 @@ alphabet = re.compile(r'[\w\s]|[' + regex_esp_characters + ']')
 unique_character = re.compile(r'[' + create_regex_from_list(unique_characters_list) + ']')
 initial_compouse_character = re.compile(r'' + create_regex_from_list(initial_compouse_character_list))
 
-transitions = {('q0', r'\d'): 'q1',    
-              ('q0', r'[a-zA-Z]'): 'q2',
-              ('q0', initial_compouse_character): 'q5',
-              ('q0', '>'): 'q6',
-              ('q0', '<'): 'q7',
-              ('q0', '*'): 'q8',
-              ('q0', '-'): 'q9',
-              ('q0', '/'): 'q10',
-              ('q0', unique_character): 'q14',
-              ('q1', r'\d'): 'q1', 
-              ('q1', r'[^\w\s]|\s'): 'q3',
-              ('q2', r'\w'): 'q2',
-              ('q2', r'[^\w\s]|\s'): 'q4',
-              ('q5', '='): 'q11',
-              ('q5', r'[^\w\s]|\s'): 'q18',
-              ('q6', '>'): 'q12',
-              ('q6', '='): 'q11',
-              ('q7', '<'): 'q12',
-              ('q7', '='): 'q11',
-              ('q8', '*'): 'q12',
-              ('q8', '='): 'q11',
-              ('q9', '>'): 'q13',
-              ('q9', '='): 'q11',
-              ('q10', '/'): 'q12',
-              ('q10', '='): 'q11',
-              ('q11', r'[^\w\s]|\s'): 'q15',
-              ('q12', '='): 'q11',
-              ('q12', r'[^\w\s]|\s'): 'q16',
-              ('q14', r'[^\w\s]|\s'): 'q17',
-              }
-
-
+#d digitos
+#s espacios en blanco y tabs
+#w letras y digitos y _
+transitions = [
+    ('q0', r'\d', 'q1'),    #
+    ('q0', r'[a-zA-Z]', 'q2'),  #
+    ('q0', initial_compouse_character, 'q5'),
+    ('q0', '>', 'q6'),
+    ('q0', '<', 'q7'),
+    ('q0', '*', 'q8'),
+    ('q0', '-', 'q9'),
+    ('q0', '/', 'q10'),
+    ('q0', unique_character, 'q14'),
+    ('q1', '.', 'q13')     #
+    ('q1', r'\d', 'q1'),      #
+    ('q1', r'[^\d|.]', 'q3'), #
+    ('q2', r'[a-zA-Z]', 'q2'),   #
+    ('q2', r'[\d|_]', 'q4'),     #
+    ('q3', r'^\w', 'q5'),              #
+    ('q5', '=', 'q11'),
+    ('q5', r'[^\w\s]|\s', 'q18'),
+    ('q6', '>', 'q12'),
+    ('q6', '=', 'q11'),
+    ('q7', '<', 'q12'),
+    ('q7', '=', 'q11'),
+    ('q8', '*', 'q12'),
+    ('q8', '=', 'q11'),
+    ('q9', '>', 'q13'),
+    ('q9', '=', 'q11'),
+    ('q10', '/', 'q12'),
+    ('q10', '=', 'q11'),
+    ('q11', r'[^\w\s]|\s', 'q15'),
+    ('q12', '=', 'q11'),
+    ('q12', r'[^\w\s]|\s', 'q16'),
+    ('q14', r'[^\w\s]|\s', 'q17'),
+]
 
 states = {'q0','q1','q2','q3','q4','q5','q6', 'q7', 'q8', 'q9', 'q10', 'q11','q12', 'q13', 'q14','q15', 'q16','q17', 'q18'}
 initial_state = 'q0'
 accepting_states = {'q3', 'q4', 'q13','q15', 'q16', 'q17', 'q18'}
 afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
 
-input_string = "mondongo_23 21 "
+input_string = "mondongo_23.21 "
 
 print(afd.run(input_string))
