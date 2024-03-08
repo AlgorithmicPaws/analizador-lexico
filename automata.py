@@ -9,16 +9,17 @@ class AFD:
         self.transitions = transitions
 
     def run(self, input_string):
+        input_list = list(input_string)  # Transform input string into a list
         current_state = self.initial_state
         print(current_state)
         row, column = 1, 0
         expression = ''
-        print(input_string)
+        print(input_list)
 
-        for index, symbol in enumerate(input_string):
+        for index in range(len(input_list)):
+            symbol = input_list[index]
             print(index)
-
-            print('simbol'+symbol)
+            print('symbol: ' + symbol)
             if symbol == '\n':
                 row += 1
                 column = 1
@@ -44,11 +45,11 @@ class AFD:
 
                     break
             if next_state is None:
-                print('Lexical a error at row:', row, 'column:', column)
+                print('Lexical error at row:', row, 'column:', column)
                 return False
             
             current_state = next_state
-            if index == len(input_string) - 1:
+            if index == len(input_list) - 1:
                 self.tokenizer(expression, expression_start_row, expression_start_column)
 
             elif current_state in self.accepting_states:
@@ -82,40 +83,46 @@ initial_compouse_character = re.compile(r'' + create_regex_from_list(initial_com
 transitions = [
     ('q0', r'\d', 'q1'),    #
     ('q0', r'[a-zA-Z]', 'q2'),  #
-    ('q0', initial_compouse_character, 'q5'),
-    ('q0', '>', 'q6'),
-    ('q0', '<', 'q7'),
-    ('q0', '*', 'q8'),
-    ('q0', '-', 'q9'),
-    ('q0', '/', 'q10'),
-    ('q0', unique_character, 'q14'),
-    ('q1', '.', 'q13')     #
-    ('q1', r'\d', 'q1'),      #
-    ('q1', r'[^\d|.]', 'q3'), #
+    ('q0', '-', 'q4'), #
+    ('q0', '*', 'q5'),#
+    ('q0', '>', 'q6'),#
+    ('q0', '<', 'q7'),#
+    ('q0', '/', 'q8'),#
+    ('q0', initial_compouse_character, 'q9'),#
+    ('q0', unique_character, 'q10'),#
+    ('q0', '_', 'q28'),#
+    ('q0', '.', 'q29'),#
+    ('q1', r'\d', 'q1'),#      
+    ('q1', '.', 'q13'),#
+    ('q1', r'[^\d|.]', 'q11'),#
     ('q2', r'[a-zA-Z]', 'q2'),   #
-    ('q2', r'[\d|_]', 'q4'),     #
-    ('q3', r'^\w', 'q5'),              #
-    ('q5', '=', 'q11'),
-    ('q5', r'[^\w\s]|\s', 'q18'),
-    ('q6', '>', 'q12'),
-    ('q6', '=', 'q11'),
-    ('q7', '<', 'q12'),
-    ('q7', '=', 'q11'),
-    ('q8', '*', 'q12'),
-    ('q8', '=', 'q11'),
-    ('q9', '>', 'q13'),
-    ('q9', '=', 'q11'),
-    ('q10', '/', 'q12'),
-    ('q10', '=', 'q11'),
-    ('q11', r'[^\w\s]|\s', 'q15'),
-    ('q12', '=', 'q11'),
-    ('q12', r'[^\w\s]|\s', 'q16'),
-    ('q14', r'[^\w\s]|\s', 'q17'),
+    ('q2', r'[\d|_]', 'q3'),    #
+    ('q2', r'[^\w]', 'q14'),
+    ('q3', r'\w', 'q3'),    #
+    ('q3', r'[^\w]', 'q15'), #
+    ('q4', '>', 'q16'),#
+    ('q4', r'', 'q26'),
+    ('q5', '*', 'q18'),#
+    ('q5', '=', 'q26'),#
+    ('q6', '>', 'q20'),#
+    ('q6', '=', 'q26'),#
+    ('q7', '<', 'q22'),#
+    ('q7', '=', 'q26'),#
+    ('q8', '/', 'q24'),#
+    ('q8', '=', 'q26'),#
+    ('q9', '=', 'q26'),#
+    ('q18', '=', 'q26'),#
+    ('q20', '=', 'q26'),#
+    ('q22', '=', 'q26'),#
+    ('q24', '=', 'q26'),#
+
 ]
 
-states = {'q0','q1','q2','q3','q4','q5','q6', 'q7', 'q8', 'q9', 'q10', 'q11','q12', 'q13', 'q14','q15', 'q16','q17', 'q18'}
+states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
+        'q11','q12','q13', 'q14','q15', 'q16','q17','q18','q19','q20',
+        'q21','q22','q23','q24','q25','q26','q27','q28','q29'}
 initial_state = 'q0'
-accepting_states = {'q3', 'q4', 'q13','q15', 'q16', 'q17', 'q18'}
+accepting_states = {'q10','q11','q13','q14','q15','q17', 'q19', 'q21','q23','q25','q27','q28','q29'}
 afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
 
 input_string = "mondongo_23.21 "

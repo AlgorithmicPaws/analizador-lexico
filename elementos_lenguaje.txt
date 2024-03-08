@@ -18,14 +18,31 @@ Simbolos especiales
 +=      -=      *=      /=      //=     %=      @=
 &=      |=      ^=      >>=     <<=     **=
 
-Para preguntar 
+simbolos unicos
+/,%,@,<,>,&,|,^,:,=,!,(,),[,],{,},;,:,.,-,+,*,~
+simbolos unicos (unique_simbol)
+(,),[,],{,},;,.,~
+Simbolos compuestos por =
+==,<=,>=,!=,+=,-=,*=,/=,%=,@=,&=,|=,^=,:=,>>=,<<=,**=,//=
+iniciadores
+%,@,&,|,^,:,=,!,+,-
+Simbolos compuestos por repe
+//,<<,>>,**
+exepciones 
+->
+
+(cumplido parcialmente) 
 The following printing ASCII characters have special meaning as part of other tokens or are otherwise significant to the lexical analyzer:
 
 '       "       #       \
-import re?
-nicky nicole si o no?
-preguntar aruitectura de afd convinado con condiciones para indentificar los tokens
 
+Ignorar comentarios ()
+agregar librerias ()
+agregar numeros complejos()
+arreglar guardado de exprecion con lista que se vuelve string()
+terminar matriz t (parcialmente)
+modularizar()
 Errores lexicos especiales
-$       ?       `
-https://www.utf8-chartable.de/
+$       ?      `           (cumplido) (revisar en string) 
+2.3.3. Reserved classes of identifiers (revisar, parcialmente incluido)
+2.4.3. f-strings (revisar)
