@@ -34,13 +34,13 @@ exepciones
 (cumplido parcialmente) 
 The following printing ASCII characters have special meaning as part of other tokens or are otherwise significant to the lexical analyzer:
 
-'       "       #       \
-
+'       "       #       \ (revisar)
 Ignorar comentarios ()
 agregar librerias ()
 agregar numeros complejos()
 arreglar guardado de exprecion con lista que se vuelve string()
 terminar matriz t (parcialmente)
+
 modularizar()
 Errores lexicos especiales
 $       ?      `           (cumplido) (revisar en string) 
