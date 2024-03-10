@@ -9,6 +9,68 @@ async      elif       if         or         yield
 match      case       type       _
 
 
+reserved_words_conMath_y_Built_in= [ 
+
+    'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
+
+    'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 
+
+    'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not',  
+
+    'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield', 
+
+    'abs', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'ceil', 
+
+    'comb', 'copysign', 'cos', 'cosh', 'degrees', 'dist', 'erf', 'erfc', 'exp', 
+
+    'expm1', 'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum', 'gamma', 
+
+    'gcd', 'hypot', 'isclose', 'isfinite', 'isinf', 'isnan', 'isqrt', 'ldexp', 
+
+    'lgamma', 'log', 'log10', 'log1p', 'log2', 'modf', 'perm', 'pi', 'pow', 
+
+    'prod', 'radians', 'remainder', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'tau', 
+
+    'trunc', 'all', 'any', 'ascii', 'bin', 'bool', 'bytearray', 'bytes', 'callable', 
+
+    'chr', 'classmethod', 'compile', 'complex', 'delattr', 'dict', 'dir', 'divmod', 
+
+    'enumerate', 'eval', 'exec', 'filter', 'float', 'format', 'frozenset', 'getattr', 
+
+    'globals', 'hasattr', 'hash', 'help', 'hex', 'id', 'input', 'int', 'isinstance', 
+
+    'issubclass', 'iter', 'len', 'list', 'locals', 'map', 'max', 'memoryview', 'min', 
+
+    'next', 'object', 'oct', 'open', 'ord', 'pow', 'print', 'property', 'range', 'repr', 
+
+    'reversed', 'round', 'set', 'setattr', 'slice', 'sorted', 'staticmethod', 'str', 
+
+    'sum', 'super', 'tuple', 'type', 'vars', 'zip', 'Ellipsis', 'NotImplemented' 
+
+    'os', 'sys', 'math', 'random', 'datetime', 're', 'json', 'csv', 'pickle', 'time', 
+    
+    'collections', 'itertools', 'functools', 'operator', 'logging', 'pathlib', 'gzip', 'zipfile', 
+    
+    'io', 'shutil', 'platform', 'subprocess', 'threading', 'multiprocessing', 'socket', 'http', 'urllib', 
+    
+    'ftplib', 'ssl', 'email', 'smtplib', 'imaplib', 'poplib', 'xml', 'html', 'cgi', 'sqlite3', 
+    
+    'multiprocessing', 'concurrent', 'asyncio', 'unittest', 'doctest', 'pytest', 'argparse', 'getopt', 
+    
+    'configparser', 'logging', 'tkinter', 'pygame', 'pandas', 'numpy', 'matplotlib', 'scipy', 'seaborn', 
+    
+    'sklearn', 'tensorflow', 'pytorch', 'flask', 'django', 'sqlalchemy'
+
+] 
+
+- falta mirar lo de math, case, type 
+
+- falta mirar lo de "error" 
+
+- falta mirar si ponemos mas lbrerías 
+
+
+
 Simbolos especiales
 +       -       *       **      /       //      %      @
 <<      >>      &       |       ^       ~       :=

@@ -62,6 +62,11 @@ class AFD:
     
     def tokenizer(self, expression, start_row, start_column):
         # Implement your tokenizer logic here
+        #falta que llegue como parametro el estado terminal 
+        #falta definir palabras reservadas de python 
+        #falta decir qué tipo de token es cada espresión 
+        #falta dejar los tokens en una tupla con formato: (tipo_de_token, lexema, fila, columna) o (tipo_de_token, fila, columna) 
+        #falta enviar cada token a la funcion format_token de lexycal 
         print('Tokenizing:', expression, 'starting at row:', start_row, 'column:', start_column)
 
 def create_regex_from_list(characters):
@@ -129,6 +134,7 @@ transitions = [
     ('q24', alphabet, 'q25'),
     ('q26', alphabet, 'q27'),
 ]
+#falta definición de un número complejo numero_complejo = a + b * 1j, ej: 0.02 + 3j 
 
 states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
         'q11','q12','q13', 'q14','q15', 'q16','q17','q18','q19','q20',
