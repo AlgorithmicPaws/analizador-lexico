@@ -62,7 +62,7 @@ class AFD:
 
             if index == len(input_list) - 1:
                 expression = expression[:-1]
-                self.tokenizer(expression, expression_start_row, expression_start_column)
+                self.tokenizer(expression, expression_start_row, expression_start_column,current_state)
 
             elif current_state in self.accepting_states:
                 if len(expression) > 1: 
