@@ -77,11 +77,70 @@ class AFD:
         return current_state in self.accepting_states
         
     
-    def tokenizer(self, expression, start_row, start_column):
+    def tokenizer(self, expression, start_row, start_column, finalState):
         # Implement your tokenizer logic here
-        #falta que llegue como parametro el estado terminal 
-        #falta definir palabras reservadas de python 
-        #falta decir qué tipo de token es cada espresión 
+        key_words= [ 
+        'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
+        'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 
+        'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not',  
+        'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield', 
+        'abs', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'ceil', 
+        'comb', 'copysign', 'cos', 'cosh', 'degrees', 'dist', 'erf', 'erfc', 'exp', 
+        'expm1', 'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum', 'gamma', 
+        'gcd', 'hypot', 'isclose', 'isfinite', 'isinf', 'isnan', 'isqrt', 'ldexp', 
+        'lgamma', 'log', 'log10', 'log1p', 'log2', 'modf', 'perm', 'pi', 'pow', 
+        'prod', 'radians', 'remainder', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'tau', 
+        'trunc', 'all', 'any', 'ascii', 'bin', 'bool', 'bytearray', 'bytes', 'callable', 
+        'chr', 'classmethod', 'compile', 'complex', 'delattr', 'dict', 'dir', 'divmod', 
+        'enumerate', 'eval', 'exec', 'filter', 'float', 'format', 'frozenset', 'getattr', 
+        'globals', 'hasattr', 'hash', 'help', 'hex', 'id', 'input', 'int', 'isinstance', 
+        'issubclass', 'iter', 'len', 'list', 'locals', 'map', 'max', 'memoryview', 'min', 
+        'next', 'object', 'oct', 'open', 'ord', 'pow', 'print', 'property', 'range', 'repr', 
+        'reversed', 'round', 'set', 'setattr', 'slice', 'sorted', 'staticmethod', 'str', 
+        'sum', 'super', 'tuple', 'type', 'vars', 'zip', 'Ellipsis', 'NotImplemented' 
+        'os', 'sys', 'math', 'random', 'datetime', 're', 'json', 'csv', 'pickle', 'time', 
+        'collections', 'itertools', 'functools', 'operator', 'logging', 'pathlib', 'gzip', 'zipfile', 
+        'io', 'shutil', 'platform', 'subprocess', 'threading', 'multiprocessing', 'socket', 'http', 'urllib', 
+        'ftplib', 'ssl', 'email', 'smtplib', 'imaplib', 'poplib', 'xml', 'html', 'cgi', 'sqlite3', 
+        'multiprocessing', 'concurrent', 'asyncio', 'unittest', 'doctest', 'pytest', 'argparse', 'getopt', 
+        'configparser', 'logging', 'tkinter', 'pygame', 'pandas', 'numpy', 'matplotlib', 'scipy', 'seaborn', 
+        'sklearn', 'tensorflow', 'pytorch', 'flask', 'django', 'sqlalchemy', '_'
+        ] 
+
+    
+        symbols = {
+         '+': 'tk_plus', '-': 'tk_minus', '*': 'tk_asterisk', '**': 'tk_double_asterisk',
+        '/': 'tk_slash', '//': 'tk_double_slash', '%': 'tk_percent', '@': 'tk_at',
+        '<<': 'tk_left_shift', '>>': 'tk_right_shift', '&': 'tk_ampersand', '|': 'tk_pipe',
+        '^': 'tk_caret', '~': 'tk_tilde', ':=': 'tk_walrus',
+        '<': 'tk_less_than', '>': 'tk_greater_than', '<=': 'tk_less_than_or_equal_to',
+        '>=': 'tk_greater_than_or_equal_to', '==': 'tk_equal_to', '!=': 'tk_not_equal_to',
+        '(': 'tk_left_parenthesis', ')': 'tk_right_parenthesis',
+        '[': 'tk_left_square_bracket', ']': 'tk_right_square_bracket',
+        '{': 'tk_left_curly_brace', '}': 'tk_right_curly_brace',
+        ',': 'tk_comma', ':': 'tk_colon', '.': 'tk_dot', ';': 'tk_semicolon', '=': 'tk_equal',
+        '->': 'tk_arrow', '+=': 'tk_plus_equal', '-=': 'tk_minus_equal', '*=': 'tk_multiply_equal',
+        '/=': 'tk_divide_equal', '//=': 'tk_double_divide_equal', '%=': 'tk_modulus_equal',
+        '@=': 'tk_at_equal', '&=': 'tk_and_equal', '|=': 'tk_or_equal', '^=': 'tk_xor_equal',
+        '>>=': 'tk_right_shift_equal', '<<=': 'tk_left_shift_equal', '**=': 'tk_double_asterisk_equal',
+        '!': 'tk_exclamation'
+        }   
+
+        if (finalState == 'q14'| finalState == 'q28'): #_ esta aca
+            if (expression in key_words):
+                tipo_token = expression
+                return 
+            else: tipo_token = "Id"
+        elif finalState == 'q15':
+            tipo_token = "Id"
+        elif finalState in ['q19', 'q17', 'q21', 'q23', 'q25', 'q27', 'q29', 'q10']:
+            if expression in symbols:
+                tipo_token = symbols[expression]
+        elif finalState == 'q13':
+            tipo_token = "float"
+        else: tipo_token = "integer"
+
+        
         #falta dejar los tokens en una tupla con formato: (tipo_de_token, lexema, fila, columna) o (tipo_de_token, fila, columna) 
         #falta enviar cada token a la funcion format_token de lexycal 
         print('Tokenizing:', expression, 'starting at row:', start_row, 'column:', start_column)
