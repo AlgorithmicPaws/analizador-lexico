@@ -15,7 +15,7 @@ class AFD:
     def counter(self, symbol):
         if symbol == '\n':
             self.row += 1
-            self.column = 1
+            self.column = 0
         else:
             self.column += 1
         
@@ -36,7 +36,7 @@ class AFD:
                 print('Lexical error at row:9', self.row, 'column:', self.column)
                 return False
 
-            
+        
             self.counter(symbol)
 
             next_state = None
@@ -160,6 +160,7 @@ class AFD:
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
         else:
+            self.column -= 1
             return 
 
         #falta dejar los tokens en una tupla con formato: (tipo_de_token, lexema, fila, columna) o (tipo_de_token, fila, columna) 
