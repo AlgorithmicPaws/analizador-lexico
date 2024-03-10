@@ -7,12 +7,23 @@ class AFD:
         self.initial_state = initial_state
         self.accepting_states = accepting_states
         self.transitions = transitions
+        self.row = 1
+        self.column = 0
 
+    def counter(self, symbol):
+        if symbol == '\n':
+            self.row += 1
+            self.column = 1
+        else:
+            self.column += 1
+        
+    def tokenizer(self, expression, start_row, start_column):
+        # Implement your tokenizer logic here
+        print('Tokenizing:', expression, 'starting at row:', start_row, 'column:', start_column)
     def run(self, input_string):
         input_list = list(input_string)  # Transform input string into a list
         current_state = self.initial_state
         print(current_state)
-        row, column = 1, 0
         expression = ''
         print(input_list)
 
@@ -20,14 +31,12 @@ class AFD:
             symbol = input_list[index]
             print(index)
             print('symbol: ' + symbol)
-            if symbol == '\n':
-                row += 1
-                column = 1
-            else:
-                column += 1
+
             if not self.alphabet.match(symbol):
-                print('Lexical error at row:', row, 'column:', column)
+                print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
+            
+            self.counter(symbol)
 
             next_state = None
             for transition in self.transitions:
@@ -35,34 +44,38 @@ class AFD:
                     state = transition[2]
                     print(state)
 
-                    if not re.match(r'\s', symbol):
-                        expression += symbol
+                    
+                    expression += symbol
 
                     if len(expression) == 1:
-                        expression_start_row = row
-                        expression_start_column = column
+                        expression_start_row = self.row
+                        expression_start_column = self.column
                     next_state = state
 
                     break
             if next_state is None:
-                print('Lexical error at row:', row, 'column:', column)
+                print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
             
             current_state = next_state
+
             if index == len(input_list) - 1:
+                expression = expression[:-1]
                 self.tokenizer(expression, expression_start_row, expression_start_column)
 
             elif current_state in self.accepting_states:
-                self.tokenizer(expression, expression_start_row, expression_start_column)
-                expression = ''
-                current_state = self.initial_state
+                if len(expression) > 1: 
+                    expression = expression[:-1]
+                    self.tokenizer(expression, expression_start_row, expression_start_column)
+                    expression = ''
+                    input_list.insert(index + 1, symbol)
+                else:
+                    self.tokenizer(expression, expression_start_row, expression_start_column)
+                    expression = ''
+                    current_state = self.initial_state
         print(current_state)
         return current_state in self.accepting_states
         
-    
-    def tokenizer(self, expression, start_row, start_column):
-        # Implement your tokenizer logic here
-        print('Tokenizing:', expression, 'starting at row:', start_row, 'column:', start_column)
 
 def create_regex_from_list(characters):
     regex = '|'.join(re.escape(character) for character in characters)
@@ -75,7 +88,7 @@ regex_esp_characters =  create_regex_from_list(esp_characters_list)
 
 alphabet = re.compile(r'[\w\s]|[' + regex_esp_characters + ']')
 unique_character = re.compile(r'[' + create_regex_from_list(unique_characters_list) + ']')
-initial_compouse_character = re.compile(r'' + create_regex_from_list(initial_compouse_character_list))
+initial_compouse_character = re.compile(r'[' + create_regex_from_list(initial_compouse_character_list) + ']')
 
 #d digitos
 #s espacios en blanco y tabs
@@ -90,7 +103,7 @@ transitions = [
     ('q0', '\/', 'q8'),#
     ('q0', initial_compouse_character, 'q9'),#
     ('q0', unique_character, 'q10'),#
-    ('q0', r'\n', 'q29'),#
+    ('q0', r'[\n\s]', 'q29'),#
     ('q0', '_', 'q28'),#
     ('q0', '\.', 'q29'),#
     ('q1', r'\d', 'q1'),#      
@@ -128,6 +141,7 @@ transitions = [
     ('q24', '\=', 'q26'),#
     ('q24', alphabet, 'q25'),
     ('q26', alphabet, 'q27'),
+
 ]
 
 states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
@@ -137,6 +151,6 @@ initial_state = 'q0'
 accepting_states = {'q10','q11','q13','q14','q15','q17', 'q19', 'q21','q23','q25','q27','q28','q29'}
 afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
 
-input_string = ">.// @. @="
+input_string = "mondongo_23=21"
 
-print(afd.run(input_string))
+print(afd.run(input_string + ' '))
