@@ -9,6 +9,7 @@ class AFD:
         self.transitions = transitions
         self.row = 1
         self.column = 0
+        self.result = False
 
     def counter(self, symbol):
         if symbol == '\n':
@@ -20,8 +21,9 @@ class AFD:
     def tokenizer(self, expression, start_row, start_column):
         # Implement your tokenizer logic here
         print('Tokenizing:', expression, 'starting at row:', start_row, 'column:', start_column)
-    def run(self, input_string):
-        input_list = list(input_string)  # Transform input string into a list
+    
+    def run(self, input_list):
+        
         current_state = self.initial_state
         print(current_state)
         expression = ''
@@ -29,12 +31,13 @@ class AFD:
 
         for index in range(len(input_list)):
             symbol = input_list[index]
-            print(index)
+            print('index'+ str(index))
             print('symbol: ' + symbol)
 
             if not self.alphabet.match(symbol):
-                print('Lexical error at row:', self.row, 'column:', self.column)
-                return False
+                print('Lexical error at row:9', self.row, 'column:', self.column)
+                self.result = False
+
             
             self.counter(symbol)
 
@@ -42,7 +45,7 @@ class AFD:
             for transition in self.transitions:
                 if transition[0] == current_state and re.match(transition[1], symbol):
                     state = transition[2]
-                    print(state)
+                    print('state' + state)
 
                     
                     expression += symbol
@@ -51,31 +54,50 @@ class AFD:
                         expression_start_row = self.row
                         expression_start_column = self.column
                     next_state = state
-
                     break
+
             if next_state is None:
-                print('Lexical error at row:', self.row, 'column:', self.column)
-                return False
+                print('Lexical error at row:8', self.row, 'column:', self.column)
+                self.result = False
             
             current_state = next_state
 
             if index == len(input_list) - 1:
+                print('entre')
                 expression = expression[:-1]
                 self.tokenizer(expression, expression_start_row, expression_start_column)
-
+                return True
             elif current_state in self.accepting_states:
                 if len(expression) > 1: 
                     expression = expression[:-1]
                     self.tokenizer(expression, expression_start_row, expression_start_column)
+                    self.column-= 1 
                     expression = ''
-                    input_list.insert(index + 1, symbol)
+                    print('bb')
+                    self.result = True
+                    print('pene' + str(input_list[index:]))
+                    return input_list[index:]
+                    #input_list.insert(index + 1, symbol)
                 else:
                     self.tokenizer(expression, expression_start_row, expression_start_column)
                     expression = ''
-                    current_state = self.initial_state
-        print(current_state)
-        return current_state in self.accepting_states
-        
+                    print('a')
+                    self.result = True
+                    print('pene' + str(input_list[index:]))
+                    return input_list[index:]
+
+                
+            #print('index'+ str(index))
+       #current_state = self.initial_state
+        print('final'+ str(current_state))
+    
+    def rerun(self, input_list):
+        actual_input = self.run(input_list)
+        while True:    
+            if actual_input == True:
+                break
+            else:
+                actual_input = self.run(actual_input)
 
 def create_regex_from_list(characters):
     regex = '|'.join(re.escape(character) for character in characters)
@@ -151,6 +173,6 @@ initial_state = 'q0'
 accepting_states = {'q10','q11','q13','q14','q15','q17', 'q19', 'q21','q23','q25','q27','q28','q29'}
 afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
 
-input_string = "mondongo_23=21"
+input_string = "mondongo_23=48=36"
 
-print(afd.run(input_string + ' '))
+print(afd.rerun(list(input_string + ' ')))
