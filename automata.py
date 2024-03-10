@@ -19,10 +19,7 @@ class AFD:
         else:
             self.column += 1
         
-    def tokenizer(self, expression, start_row, start_column):
-        # Implement your tokenizer logic here
-        print('Tokenizing:', expression, 'starting at row:', start_row, 'column:', start_column)
-    
+
     def run(self, input_list):
         
         current_state = self.initial_state
@@ -37,7 +34,7 @@ class AFD:
 
             if not self.alphabet.match(symbol):
                 print('Lexical error at row:9', self.row, 'column:', self.column)
-                self.result = False
+                return False
 
             
             self.counter(symbol)
@@ -59,7 +56,7 @@ class AFD:
 
             if next_state is None:
                 print('Lexical error at row:8', self.row, 'column:', self.column)
-                self.result = False
+                return False
             
             current_state = next_state
 
@@ -138,35 +135,41 @@ class AFD:
         '!': 'tk_exclamation'
         }   
 
-        if (finalState == 'q14' or finalState == 'q28'): #_ esta aca
+        if (finalState == 'q14' or finalState == 'q15'): #_ esta aca
             if (expression in key_words):
                 self.token_list.append((expression, start_row, start_column))
             else: 
                 tipo_token = "Id"
+                self.token_list.append((tipo_token, expression, start_row, start_column))
+
         elif finalState == 'q15':
             tipo_token = "Id"
-        elif finalState in ['q19', 'q17', 'q21', 'q23', 'q25', 'q27', 'q29', 'q10']:
+            self.token_list.append((tipo_token, expression, start_row, start_column))
+
+        elif finalState in ['q19', 'q17', 'q21', 'q23', 'q25', 'q28', 'q29','q27','q10']:
             if expression in symbols:
                 tipo_token = symbols[expression]
+                self.token_list.append((tipo_token, expression, start_row, start_column))
+
         elif finalState == 'q13':
             tipo_token = "tk_float"
-        else: 
-            tipo_token = "tk_integer"
-        self.token_list.append((tipo_token, expression, start_row, start_column))
+            self.token_list.append((tipo_token, expression, start_row, start_column))
 
-        
+        elif finalState == 'q11':
+            tipo_token = "tk_integer"
+            self.token_list.append((tipo_token, expression, start_row, start_column))
+
+        else:
+            return 
+
         #falta dejar los tokens en una tupla con formato: (tipo_de_token, lexema, fila, columna) o (tipo_de_token, fila, columna) 
         #falta enviar cada token a la funcion format_token de lexycal 
-        print('Tokenizing:', expression, 'starting at row:', start_row, 'column:', start_column)
-
-                
-            #print('index'+ str(index))
-       #current_state = self.initial_state
-    
     def rerun(self, input_list):
         actual_input = self.run(input_list)
         while True:    
             if actual_input == True:
+                break
+            elif actual_input == False:
                 break
             else:
                 actual_input = self.run(actual_input)
@@ -201,7 +204,7 @@ transitions = [
     ('q0', '_', 'q28'),#
     ('q0', '\.', 'q29'),#
     ('q1', r'\d', 'q1'),#      
-    ('q1', '\.', 'q13'),#
+    ('q1', '\.', 'q12'),#
     ('q1', r'[^\d|.]', 'q11'),#
     ('q2', r'[a-zA-Z]', 'q2'),   #
     ('q2', r'[\d|_]', 'q3'),    #
@@ -209,6 +212,7 @@ transitions = [
     ('q3', r'\w', 'q3'),    #
     ('q3', r'[^\w]', 'q15'), #
     ('q4', '\>', 'q16'),#
+    ('q4', '\=', 'q26'),#
     ('q4', r'[^>]', 'q10'),#
     ('q5', '\*', 'q18'),#
     ('q5', '\=', 'q26'),#
@@ -225,6 +229,8 @@ transitions = [
     ('q8', r'[^/|*]', 'q10'),#
     ('q9', '\=', 'q26'),#
     ('q9', r'[^=]', 'q28'),#
+    ('q12', r'\d', 'q12'),#
+    ('q12', r'[^\d]', 'q13'),#
     ('q16', alphabet, 'q17'),
     ('q18', '\=', 'q26'),#
     ('q18', alphabet, 'q19'),
@@ -235,20 +241,22 @@ transitions = [
     ('q24', '\=', 'q26'),#
     ('q24', alphabet, 'q25'),
     ('q26', alphabet, 'q27'),
+    ('q29', r'\s', 'q29'),
+    ('q29', alphabet, 'q30'),
 
 ]
 #falta definición de un número complejo numero_complejo = a + b * 1j, ej: 0.02 + 3j 
 
 states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
         'q11','q12','q13', 'q14','q15', 'q16','q17','q18','q19','q20',
-        'q21','q22','q23','q24','q25','q26','q27','q28','q29'}
+        'q21','q22','q23','q24','q25','q26','q27','q28','q29','q30'}
 initial_state = 'q0'
-accepting_states = {'q10','q11','q13','q14','q15','q17', 'q19', 'q21','q23','q25','q27','q28','q29'}
+accepting_states = {'q10','q11','q13','q14','q15','q17', 'q19', 'q21','q23','q25','q27','q28','q30'}
 afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
 
 
 
-input_string = "mondongo_23=48=36"
+input_string = "mondongo_23=48=36.43  while == = //= >> -=  \n mondongo"
 
 print(afd.rerun(list(input_string + ' ')))
 print(afd.token_list)
