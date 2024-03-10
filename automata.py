@@ -9,6 +9,7 @@ class AFD:
         self.transitions = transitions
         self.row = 1
         self.column = 0
+        self.token_list = []
 
     def counter(self, symbol):
         if symbol == '\n':
@@ -66,11 +67,11 @@ class AFD:
             elif current_state in self.accepting_states:
                 if len(expression) > 1: 
                     expression = expression[:-1]
-                    self.tokenizer(expression, expression_start_row, expression_start_column)
+                    self.tokenizer(expression, expression_start_row, expression_start_column, current_state)
                     expression = ''
                     input_list.insert(index + 1, symbol)
                 else:
-                    self.tokenizer(expression, expression_start_row, expression_start_column)
+                    self.tokenizer(expression, expression_start_row, expression_start_column, current_state)
                     expression = ''
                     current_state = self.initial_state
         print(current_state)
@@ -126,19 +127,21 @@ class AFD:
         '!': 'tk_exclamation'
         }   
 
-        if (finalState == 'q14'| finalState == 'q28'): #_ esta aca
+        if (finalState == 'q14' or finalState == 'q28'): #_ esta aca
             if (expression in key_words):
-                tipo_token = expression
-                return 
-            else: tipo_token = "Id"
+                self.token_list.append((expression, start_row, start_column))
+            else: 
+                tipo_token = "Id"
         elif finalState == 'q15':
             tipo_token = "Id"
         elif finalState in ['q19', 'q17', 'q21', 'q23', 'q25', 'q27', 'q29', 'q10']:
             if expression in symbols:
                 tipo_token = symbols[expression]
         elif finalState == 'q13':
-            tipo_token = "float"
-        else: tipo_token = "integer"
+            tipo_token = "tk_float"
+        else: 
+            tipo_token = "tk_integer"
+        self.token_list.append((tipo_token, expression, start_row, start_column))
 
         
         #falta dejar los tokens en una tupla con formato: (tipo_de_token, lexema, fila, columna) o (tipo_de_token, fila, columna) 
@@ -220,6 +223,8 @@ initial_state = 'q0'
 accepting_states = {'q10','q11','q13','q14','q15','q17', 'q19', 'q21','q23','q25','q27','q28','q29'}
 afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
 
-input_string = "mondongo_23=21"
+input_string = "mondongo_23=21 cata"
+
 
 print(afd.run(input_string + ' '))
+print(afd.token_list)
