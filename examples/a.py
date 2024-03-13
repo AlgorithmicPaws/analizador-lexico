@@ -11,8 +11,11 @@ class Cow(Animal):
     def __init__(self: "Cow"):
         self.makes_noise = True
     def sound(self: "Cow") -> str:
-        return 5
-
+        return 5000_9j
+5J
 c:Animal = None
 c = Cow()
 c.make_noise() # Prints "moo"
+mondongo_23 = 100_000
+$
+2_6.1_2

@@ -1,0 +1,17 @@
+<class,1,1>
+<Id,Animal,1,6>
+<tk_left_parenthesis,1,12>
+<object,1,13>
+<tk_right_parenthesis,1,19>
+<tk_colon,1,20>
+<Id,makes_noise,2,5>
+<tk_colon,2,16>
+<bool,2,17>
+<tk_equal,2,21>
+<False,2,22>
+<def,3,5>
+<Id,make_noise,3,8>
+<tk_left_parenthesis,3,18>
+<Id,self,3,19>
+<tk_colon,3,23>
+>>> lexical error,3,24>

@@ -44,10 +44,12 @@ class Automaton:
         """
         actual_input = self.run(input_string)
         while True:    
-            if actual_input == True or actual_input == False:
-                break
+            if actual_input == True:
+                return True
+            elif actual_input == False:
+                return False
             else:
-                actual_input = self.run(actual_input)
+                actual_input = self.run(actual_input)     
     def counter(self, symbol):
         if symbol == '\n':
             self.row += 1
@@ -66,6 +68,7 @@ class Automaton:
             print('symbol: ' + symbol)
 
             if not self.alphabet.match(symbol):
+                self.error_tokenizer(self.row,self.column)
                 print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
 
@@ -88,6 +91,7 @@ class Automaton:
                     break
 
             if next_state is None:
+                self.error_tokenizer(self.row,self.column)
                 print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
             
@@ -98,6 +102,7 @@ class Automaton:
                 expression = expression[:-1]
                 self.tokenizer(expression, expression_start_row, expression_start_column,current_state)
                 return True
+            
             elif current_state in self.accepting_states:
                 if len(expression) > 1: 
                     expression = expression[:-1]
@@ -107,7 +112,6 @@ class Automaton:
                         self.row-= 1  
                     expression = ''
                     print('bb')
-                    self.result = True
                     print('pene' + str(input_list[index:]))
                     return input_list[index:]
                     #input_list.insert(index + 1, symbol)
@@ -116,10 +120,11 @@ class Automaton:
                     expression = ''
                     current_state = self.initial_state
                     print('a')
-                    self.result = True
                     print('pene' + str(input_list[index:]))
                     return input_list[index:]
 
+    def error_tokenizer(self, start_row, start_column):
+        self.token_list.append((start_row, start_column))
     
     def tokenizer(self, expression, start_row, start_column, finalState):
         # Implement your tokenizer logic here
@@ -182,7 +187,7 @@ class Automaton:
         elif finalState in ['q19', 'q17', 'q21', 'q23', 'q25', 'q28', 'q29','q27','q10']:
             if expression in symbols:
                 tipo_token = symbols[expression]
-                self.token_list.append((tipo_token, expression, start_row, start_column))
+                self.token_list.append((tipo_token, start_row, start_column))
         elif finalState == 'q11':
             tipo_token = "tk_integer"
             self.token_list.append((tipo_token, expression, start_row, start_column))
@@ -192,16 +197,18 @@ class Automaton:
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
 
-        elif finalState == 'q33':
+        elif finalState == 'q34':
             tipo_token = "tk_cientific"
+            self.token_list.append((tipo_token, expression, start_row, start_column))
+        
+        elif finalState == 'q36':
+            tipo_token = "tk_imaginary"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
         else:
             self.column -= 1
             return 
 
-        #falta dejar los tokens en una tupla con formato: (tipo_de_token, lexema, fila, columna) o (tipo_de_token, fila, columna) 
-        #falta enviar cada token a la funcion format_token de lexycal 
     
 
 
