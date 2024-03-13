@@ -45,11 +45,13 @@ The following printing ASCII characters have special meaning as part of other to
 
 '       "       #       \ (revisar)
 Ignorar comentarios ()
-agregar librerias ()
+agregar librerias (hecho)
 agregar numeros complejos()
-arreglar guardado de exprecion con lista que se vuelve string()
+arreglar guardado de exprecion con lista que se vuelve string(hecho)
 terminar matriz t (parcialmente)
-
+__init__(hecho)
+_variable(hecho)
+NEGARTIVOS()
 modularizar()
 Errores lexicos especiales
 $       ?      `           (cumplido) (revisar en string) 

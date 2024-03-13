@@ -1,7 +1,33 @@
 import re
 
-class AFD:
+class Automaton:
+    """
+    Class representing a Deterministic Finite Automaton (DFA).
+    """
+
     def __init__(self, states, alphabet, initial_state, accepting_states, transitions):
+        """
+        Initialize the DFA with states, alphabet, initial state, accepting states, and transitions.
+
+        Parameters:
+        states (list): List of states in the DFA.
+        alphabet (list): List of symbols in the alphabet of the DFA.
+        initial_state (str): The initial state of the DFA.
+        accepting_states (list): List of accepting states in the DFA.
+        transitions (dict): Dictionary representing transitions in the DFA. 
+                            Keys are tuples (current_state, symbol) and values are the next state.
+
+        Attributes:
+        states (list): List of states in the DFA.
+        alphabet (list): List of symbols in the alphabet of the DFA.
+        initial_state (str): The initial state of the DFA.
+        accepting_states (list): List of accepting states in the DFA.
+        transitions (dict): Dictionary representing transitions in the DFA.
+        row (int): Current row index for processing input tokens.
+        column (int): Current column index for processing input tokens.
+        token_list (list): List to store processed tokens.
+        result (bool): Result of DFA execution, initialized as False.
+        """
         self.states = states
         self.alphabet = alphabet
         self.initial_state = initial_state
@@ -12,28 +38,35 @@ class AFD:
         self.token_list = []
         self.result = False
 
+    def rerun(self, input_string):
+        """
+        Rerun the DFA on the input string until fully processed.
+        """
+        actual_input = self.run(input_string)
+        while True:    
+            if actual_input == True or actual_input == False:
+                break
+            else:
+                actual_input = self.run(actual_input)
     def counter(self, symbol):
         if symbol == '\n':
             self.row += 1
-            self.column = 0
+            self.column = 1
         else:
             self.column += 1
-        
 
     def run(self, input_list):
         
         current_state = self.initial_state
-        print(current_state)
         expression = ''
-        print(input_list)
-
+        
         for index in range(len(input_list)):
             symbol = input_list[index]
             print('index'+ str(index))
             print('symbol: ' + symbol)
 
             if not self.alphabet.match(symbol):
-                print('Lexical error at row:9', self.row, 'column:', self.column)
+                print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
 
         
@@ -55,7 +88,7 @@ class AFD:
                     break
 
             if next_state is None:
-                print('Lexical error at row:8', self.row, 'column:', self.column)
+                print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
             
             current_state = next_state
@@ -69,7 +102,9 @@ class AFD:
                 if len(expression) > 1: 
                     expression = expression[:-1]
                     self.tokenizer(expression, expression_start_row, expression_start_column, current_state)
-                    self.column-= 1 
+                    self.column-= 1
+                    if symbol == '\n':
+                        self.row-= 1  
                     expression = ''
                     print('bb')
                     self.result = True
@@ -113,10 +148,8 @@ class AFD:
         'ftplib', 'ssl', 'email', 'smtplib', 'imaplib', 'poplib', 'xml', 'html', 'cgi', 'sqlite3', 
         'multiprocessing', 'concurrent', 'asyncio', 'unittest', 'doctest', 'pytest', 'argparse', 'getopt', 
         'configparser', 'logging', 'tkinter', 'pygame', 'pandas', 'numpy', 'matplotlib', 'scipy', 'seaborn', 
-        'sklearn', 'tensorflow', 'pytorch', 'flask', 'django', 'sqlalchemy', '_'
+        'sklearn', 'tensorflow', 'pytorch', 'flask', 'django', 'sqlalchemy', '_', '__init__'
         ] 
-
-    
         symbols = {
          '+': 'tk_plus', '-': 'tk_minus', '*': 'tk_asterisk', '**': 'tk_double_asterisk',
         '/': 'tk_slash', '//': 'tk_double_slash', '%': 'tk_percent', '@': 'tk_at',
@@ -150,13 +183,17 @@ class AFD:
             if expression in symbols:
                 tipo_token = symbols[expression]
                 self.token_list.append((tipo_token, expression, start_row, start_column))
+        elif finalState == 'q11':
+            tipo_token = "tk_integer"
+            self.token_list.append((tipo_token, expression, start_row, start_column))
 
         elif finalState == 'q13':
             tipo_token = "tk_float"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
-        elif finalState == 'q11':
-            tipo_token = "tk_integer"
+
+        elif finalState == 'q33':
+            tipo_token = "tk_cientific"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
         else:
@@ -165,99 +202,6 @@ class AFD:
 
         #falta dejar los tokens en una tupla con formato: (tipo_de_token, lexema, fila, columna) o (tipo_de_token, fila, columna) 
         #falta enviar cada token a la funcion format_token de lexycal 
-    def rerun(self, input_list):
-        actual_input = self.run(input_list)
-        while True:    
-            if actual_input == True:
-                break
-            elif actual_input == False:
-                break
-            else:
-                actual_input = self.run(actual_input)
-
-def create_regex_from_list(characters):
-    regex = '|'.join(re.escape(character) for character in characters)
-    return regex
     
-esp_characters_list = ['/','%','@','<','>','&','|','^','~',':','=','!','(',')','[',']','{','}',';',':','.','-','+','*']
-unique_characters_list = ['(',')','[',']','{','}',';','~']
-initial_compouse_character_list = ['%','@','&','|','^',':','=','!',':','-','+','*']
-regex_esp_characters =  create_regex_from_list(esp_characters_list)
-
-alphabet = re.compile(r'[\w\s]|[' + regex_esp_characters + ']')
-unique_character = re.compile(r'[' + create_regex_from_list(unique_characters_list) + ']')
-initial_compouse_character = re.compile(r'[' + create_regex_from_list(initial_compouse_character_list) + ']')
-
-#d digitos
-#s espacios en blanco y tabs
-#w letras y digitos y _
-transitions = [
-    ('q0', r'\d', 'q1'),    #
-    ('q0', r'[a-zA-Z]', 'q2'),  #
-    ('q0', '-', 'q4'), #
-    ('q0', '\*', 'q5'),#
-    ('q0', '\>', 'q6'),#
-    ('q0', '\<', 'q7'),#
-    ('q0', '\/', 'q8'),#
-    ('q0', initial_compouse_character, 'q9'),#
-    ('q0', unique_character, 'q10'),#
-    ('q0', r'[\n\s]', 'q29'),#
-    ('q0', '_', 'q28'),#
-    ('q0', '\.', 'q29'),#
-    ('q1', r'\d', 'q1'),#      
-    ('q1', '\.', 'q12'),#
-    ('q1', r'[^\d|.]', 'q11'),#
-    ('q2', r'[a-zA-Z]', 'q2'),   #
-    ('q2', r'[\d|_]', 'q3'),    #
-    ('q2', r'[^\w]', 'q14'),
-    ('q3', r'\w', 'q3'),    #
-    ('q3', r'[^\w]', 'q15'), #
-    ('q4', '\>', 'q16'),#
-    ('q4', '\=', 'q26'),#
-    ('q4', r'[^>]', 'q10'),#
-    ('q5', '\*', 'q18'),#
-    ('q5', '\=', 'q26'),#
-    ('q5', r'[^=|*]', 'q10'),#
-    ('q18', '\*', 'q19'),#
-    ('q6', '\>', 'q20'),#
-    ('q6', '\=', 'q26'),#
-    ('q6', r'[^>|*]', 'q10'),#
-    ('q7', '\<', 'q22'),#
-    ('q7', '\=', 'q26'),#
-    ('q7', r'[^<|*]', 'q10'),#
-    ('q8', '\/', 'q24'),#
-    ('q8', '\=', 'q26'),#
-    ('q8', r'[^/|*]', 'q10'),#
-    ('q9', '\=', 'q26'),#
-    ('q9', r'[^=]', 'q28'),#
-    ('q12', r'\d', 'q12'),#
-    ('q12', r'[^\d]', 'q13'),#
-    ('q16', alphabet, 'q17'),
-    ('q18', '\=', 'q26'),#
-    ('q18', alphabet, 'q19'),
-    ('q20', '\=', 'q26'),#
-    ('q20', alphabet, 'q21'),
-    ('q22', '\=', 'q26'),#
-    ('q22', alphabet, 'q23'),
-    ('q24', '\=', 'q26'),#
-    ('q24', alphabet, 'q25'),
-    ('q26', alphabet, 'q27'),
-    ('q29', r'\s', 'q29'),
-    ('q29', alphabet, 'q30'),
-
-]
-#falta definición de un número complejo numero_complejo = a + b * 1j, ej: 0.02 + 3j 
-
-states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
-        'q11','q12','q13', 'q14','q15', 'q16','q17','q18','q19','q20',
-        'q21','q22','q23','q24','q25','q26','q27','q28','q29','q30'}
-initial_state = 'q0'
-accepting_states = {'q10','q11','q13','q14','q15','q17', 'q19', 'q21','q23','q25','q27','q28','q30'}
-afd = AFD(states, alphabet, initial_state, accepting_states, transitions)
 
 
-
-input_string = "mondongo_23=48=36.43  while == = //= >> -=  \n mondongo"
-
-print(afd.rerun(list(input_string + ' ')))
-print(afd.token_list)
