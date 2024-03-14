@@ -93,8 +93,8 @@ def main():
         regex = '|'.join(re.escape(character) for character in characters)
         return regex
     
-    esp_characters_list = ['?','$','`',"'",'"','#','/','%','@','<','>','&','|','^','~',':','=','!','(',')','[',']','{','}',';',':','.','-','+','*']
-    unique_characters_list = ['(',')','[',']','{','}',';','~']
+    esp_characters_list = ['?','$','`',"'",'"','#','/','%','@','<','>','&','|','^','~',':','=','!','(',')','[',']','{','}',';',':','.','-','+','*',',']
+    unique_characters_list = ['(',')','[',']','{','}',';','~',',']
     expetion_characters_list = ['?','$','`']
     initial_compouse_character_list = ['%','@','&','|','^',':','=','!','+']
     regex_esp_characters =  create_regex_from_list(esp_characters_list)
@@ -180,6 +180,44 @@ def main():
         ('q31',r'\=', 'q33'),
         ('q31',r'[^`$?]', 'q32'), # ** character final state 
         ('q33',r'[^`$?]', 'q32'), # *= or ** = character final state 
+        ('q0',r'\>', 'q34'),
+        ('q34',r'\>', 'q35'),
+        ('q34',r'\=', 'q36'),
+        ('q34',r'[^=`$?]','q32'), # > character final state 
+        ('q35',r'\=', 'q36'),
+        ('q35',r'[^`$?]', 'q32'), # >> character final state 
+        ('q36',r'[^`$?]', 'q32'), # >= or >>= character final state 
+        ('q0',r'\<', 'q37'),
+        ('q37',r'\<', 'q38'),
+        ('q37',r'\=', 'q39'),
+        ('q37',r'[^=`$?]','q32'), # < character final state 
+        ('q38',r'\=', 'q39'),
+        ('q38',r'[^`$?]', 'q32'), # << character final state 
+        ('q39',r'[^`$?]', 'q32'), # <= or <<= character final state 
+        ('q0',r'\/', 'q40'),
+        ('q40',r'\/', 'q41'),
+        ('q40',r'\=', 'q42'),
+        ('q40',r'[^=`$?]','q32'), # / character final state 
+        ('q41',r'\=', 'q42'),
+        ('q41',r'[^`$?]', 'q32'), # // character final state 
+        ('q42',r'[^`$?]', 'q32'), # /= or //= character final state 
+        #unique caracter operator
+        ('q0',unique_character, 'q43'),
+        ('q43',r'[^`$?]','q32'), # unique character final state 
+        # - exception 
+        ('q0',r'\-', 'q44'),
+        ('q44',r'\>', 'q46'),
+        ('q44',r'\=', 'q46'),
+        ('q44',r'[^=`$?]','q32'), # - character final state
+        ('q46',r'[^`$?]', 'q32'), # -> or -= character final state 
+        # .
+        ('q0',r'\.', 'q47'),
+        ('q47',r'\d', 'q2'),
+        ('q47',r'[^0-9`$?]', 'q32'), # . character final state
+        # spaces and new line
+        ('q0',r'\s', 'q48'),
+        ('q0',r'\n', 'q48'),
+        ('q48',r'[^`$?]', 'q49'),
     ]
 
     states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
@@ -188,7 +226,7 @@ def main():
             'q31','q32','q33','q34','q35','q36','q37','q38','q39','q40',
             'q41','q42','q43','q44','q45','q46','q47','q48'}
     initial_state = 'q0'
-    accepting_states = {'q5','q6','q12','q17','q19','q22','q26', 'q29', 'q32'}
+    accepting_states = {'q5','q6','q12','q17','q19','q22','q26', 'q29', 'q32' , 'q49'}
     afd = automata.Automaton(states, alphabet, initial_state, accepting_states, transitions)
 
     # Example usage:
