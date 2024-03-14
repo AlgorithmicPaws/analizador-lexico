@@ -44,17 +44,17 @@ exepciones
 The following printing ASCII characters have special meaning as part of other tokens or are otherwise significant to the lexical analyzer:
 
 '       "       #       \ (revisar)
-Ignorar comentarios ()
+Ignorar comentarios (hecho)
 agregar librerias (hecho)
 agregar numeros complejos(hecho)
 arreglar guardado de exprecion con lista que se vuelve string(hecho)
-terminar matriz t (parcialmente)
 __init__(hecho)
 _variable(hecho)
-cientifico NEGARTIVOS()
+cientifico NEGARTIVOS(hecho)
 modularizar()
 Errores lexicos especiales
-$       ?      `           (cumplido) (revisar en string) (revisar col)
+$       ?      `           (cumplido) (revisar en string) 
 2.3.3. Reserved classes of identifiers (revisar, parcialmente incluido)
 2.4.3. f-strings (revisar)
 Decoradores (revisar)
+Hexadecimal y los otros(revisar)

@@ -176,39 +176,36 @@ class Automaton:
         '!': 'tk_exclamation'
         }   
 
-        if (finalState == 'q14' or finalState == 'q15'): #_ esta aca
+        if (finalState == 'q19'): 
             if (expression in key_words):
                 self.token_list.append((expression, start_row, start_column))
             else: 
                 tipo_token = "Id"
                 self.token_list.append((tipo_token, expression, start_row, start_column))
 
-        elif finalState == 'q15':
-            tipo_token = "Id"
-            self.token_list.append((tipo_token, expression, start_row, start_column))
-
-        elif finalState in ['q19', 'q17', 'q21', 'q23', 'q25', 'q28','q27','q10']:
+        elif finalState in ['q29','q32']:
             if expression in symbols:
                 tipo_token = symbols[expression]
                 self.token_list.append((tipo_token, start_row, start_column))
-        elif finalState == 'q11':
+        
+        elif finalState == 'q5':
             tipo_token = "tk_integer"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
-        elif finalState == 'q13':
+        elif finalState == 'q6':
             tipo_token = "tk_float"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
 
-        elif finalState == 'q34':
+        elif finalState == 'q12':
             tipo_token = "tk_cientific"
             self.token_list.append((tipo_token, expression, start_row, start_column))
         
-        elif finalState == 'q36':
+        elif finalState == 'q17':
             tipo_token = "tk_imaginary"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
-        elif finalState == 'q44':
+        elif finalState == 'q22':
             tipo_token = "tk_string"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 

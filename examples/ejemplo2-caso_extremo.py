@@ -1,1 +1,2 @@
-print(2.)
+_Ass= False
+print(_Ass)

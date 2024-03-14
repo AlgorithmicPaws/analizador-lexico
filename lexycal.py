@@ -96,7 +96,7 @@ def main():
     esp_characters_list = ['?','$','`',"'",'"','#','/','%','@','<','>','&','|','^','~',':','=','!','(',')','[',']','{','}',';',':','.','-','+','*']
     unique_characters_list = ['(',')','[',']','{','}',';','~']
     expetion_characters_list = ['?','$','`']
-    initial_compouse_character_list = ['%','@','&','|','^',':','=','!',':','-','+','*']
+    initial_compouse_character_list = ['%','@','&','|','^',':','=','!','+']
     regex_esp_characters =  create_regex_from_list(esp_characters_list)
 
     alphabet = re.compile(r'[\w\s]|[' + regex_esp_characters + ']')
@@ -107,84 +107,79 @@ def main():
     #s spaces and tabs
     #w letters, digits, and _
     transitions = [
-        ('q0', r'\d', 'q1'),    #
-        ('q0', r'[a-zA-Z]|_', 'q2'),  #
-        ('q0', '-', 'q4'), #
-        ('q0', '\*', 'q5'),#
-        ('q0', '\>', 'q6'),#
-        ('q0', '\<', 'q7'),#
-        ('q0', '\/', 'q8'),#
-        ('q0', initial_compouse_character, 'q9'),#
-        ('q0', unique_character, 'q31'),#
-        ('q0', r'[\n\s]', 'q29'),#
-        ('q0', '\.', 'q29'),#verificar
-        ('q0', r'#', 'q40'),# modifica
-        ('q0', r'\'', 'q42'),# modifica       
-        ('q0', r'\"', 'q45'),# modifica       
-        ('q1', r'\d', 'q1'),#
-        ('q1', '_', 'q37'),#  modifica
-        ('q1', r'e|E', 'q33'),# m
-        ('q1', r'j|J', 'q35'),#  m
-        ('q1', '\.', 'q12'),#
-        ('q1', r'[^0-9.e?`$]', 'q11'),#
-        ('q2', r'[a-zA-Z]', 'q2'),   #
-        ('q2', r'[\d|_]', 'q3'),    #
-        ('q2', r'[^\w]', 'q14'),
-        ('q3', r'\w', 'q3'),    #
-        ('q3', r'[^\w]', 'q15'), #    #
-        ('q4', '\>', 'q16'),#
-        ('q4', '\=', 'q26'),#
-        ('q4', r'[^>?`$]', 'q10'),#
-        ('q5', '\*', 'q18'),#
-        ('q5', '\=', 'q26'),#
-        ('q5', r'[^=*?`$]', 'q10'),#
-        ('q6', '\>', 'q20'),#
-        ('q6', '\=', 'q26'),#
-        ('q6', r'[^>=?`$]', 'q10'),#
-        ('q7', '\<', 'q22'),#
-        ('q7', '\=', 'q26'),#
-        ('q7', r'[^<=?`$]', 'q10'),#
-        ('q8', '\/', 'q24'),#
-        ('q8', '\=', 'q26'),#
-        ('q8', r'[^/=?`$]', 'q10'),#
-        ('q9', '\=', 'q26'),#
-        ('q9', r'[^=?`$]', 'q28'),#
-        ('q12', r'\d', 'q12'),# r
-        ('q12', '_', 'q41'),# r
-        ('q12', r'e', 'q33'),#  
-        ('q12', r'[^0-9?`$]', 'q13'),#
-        ('q16', r'[^?`$]', 'q17'),
-        ('q18', '\=', 'q26'),#
-        ('q18', '\*', 'q19'),#
-        ('q18', r'[^?`$]', 'q19'),
-        ('q20', '\=', 'q26'),#
-        ('q20', r'[^?`$]', 'q21'),
-        ('q22', '\=', 'q26'),#
-        ('q22', r'[^?`$]', 'q23'),
-        ('q24', '\=', 'q26'),#
-        ('q24', r'[^?`$]', 'q25'),
-        ('q26', r'[^?`$]', 'q27'),
-        ('q29', r'\s', 'q29'),
-        ('q29', r'[^?`$]', 'q30'),
-        ('q32', r'\d', 'q12'),    #
-        ('q31', r'[^?`$]', 'q10'),
-        ('q33', r'\d', 'q33'),
-        ('q33', r'[^?`$]', 'q34'),
-        ('q35', r'[^?`$]', 'q36'),
-        ('q37', r'\d', 'q38'),
-        ('q38', r'\d', 'q1'),
-        ('q38', '\.', 'q41'),
-        ('q38', '\.', 'q41'),
-        ('q38', r'[^?`$]', 'q11'),
-        ('q40', r'[^\n$`?]', 'q40'),
-        ('q40', r'\n', 'q40'),
-        ('q41', r'\d', 'q12'),
-        ('q42', r"[^']", 'q42'),
-        ('q42', r'\'', 'q43'),
-        ('q43', alphabet, 'q44'),
-        ('q45', r'[^"]', 'q45'),
-        ('q45', r'\"', 'q46'),
-        ('q46', r'[^?`$]', 'q44')
+        #Numeros 
+        ('q0', r'\d', 'q1'),
+        ('q1', r'\d', 'q1'),
+        ('q1', r'[eE]', 'q10'),
+        ('q1', r'_', 'q3'),
+        ('q1', r'\.', 'q2'),
+        ('q1', r'[jJ]', 'q16'),
+        ('q1', r'[^0-9eEjJ._?$`]', 'q5'),# Integer final state
+        ('q2', r'\d', 'q14'),
+        ('q2', r'[eE]', 'q10'),
+        ('q2', r'[jJ]', 'q16'),
+        ('q2', r'[^0-9eEjJ_?$`]', 'q6'), # Float int. final state
+        ('q3', r'\d', 'q4'),
+        ('q4', r'\d', 'q4'),
+        ('q4', r'_', 'q3'),
+        ('q4', r'[eE]', 'q10'),
+        ('q4', r'\.', 'q7'),
+        ('q4', r'[jJ]', 'q16'),
+        ('q4', r'[^0-9eEjJ._?$`]', 'q5'), # Integer_ final state
+        ('q7', r'\d', 'q8'),
+        ('q7', r'[eE]', 'q10'),
+        ('q7', r'[jJ]', 'q16'),
+        ('q7', r'[^0-9eEjJ_?$`]', 'q6'), # Float _int. final state
+        ('q8', r'\d', 'q8'),
+        ('q8', r'_', 'q9'),
+        ('q8', r'[eE]', 'q10'),
+        ('q8', r'[jJ]', 'q16'),
+        ('q8', r'[^0-9eEjJ_?$`]', 'q6'), # Float (._dec) o (_._dec) final state
+        ('q9', r'\d', 'q8'),
+        ('q10', r'[\d_]', 'q11'),
+        ('q10', r'-', 'q13'),
+        ('q11', r'\d', 'q11'),
+        ('q11', r'_', 'q15'),
+        ('q11', r'[jJ]', 'q16'),
+        ('q11', r'[^0-9jJ_?$`]', 'q12'), # Basic/Float cientific final state 
+        ('q13', r'\d', 'q11'),
+        ('q14', r'_', 'q9'),
+        ('q14', r'\d', 'q14'),
+        ('q14', r'[eE]', 'q10'),
+        ('q14', r'[jJ]', 'q16'),
+        ('q14', r'[^0-9eEjJ_?$`]', 'q6'), # Float final state
+        ('q15', r'\d', 'q11'),
+        ('q16', r'[^0-9_?$`]', 'q17'),
+        #keywords/id
+        ('q0', r'[_a-zA-Z]', 'q18'),
+        ('q18', r'[\w]', 'q18'),
+        ('q18', r'[^\w`$?]', 'q19'), #Id/keyword final state
+        #strings
+        ('q0', r'\'', 'q20'),
+        ('q0', r'\"', 'q23'),
+        ('q20', r"[^'\n]", 'q20'),
+        ('q20', r"\'", 'q21'),
+        ('q21', alphabet, 'q22'),# strings '' final state
+        ('q23', r'[^"\n]', 'q23'),
+        ('q23', r'\"', 'q24'),
+        ('q24', alphabet, 'q22'),# strings "" final state
+        #Comments
+        ('q0', r'\#', 'q25'),
+        ('q25',r'[^\n]', 'q25'),
+        ('q25',r'\n', 'q26'), # Ignore comments final state
+        #Compouse characters
+        ('q0',initial_compouse_character, 'q27'),
+        ('q27',r'\=', 'q28'),
+        ('q27',r'[^=`$?]','q29'), # Initial caracter final state
+        ('q28',r'[^`$?]','q29'), # Initial caracter = final state
+        #Duplicate chatacters
+        ('q0',r'\*', 'q30'),
+        ('q30',r'\*', 'q31'),
+        ('q30',r'\=', 'q33'),
+        ('q30',r'[^=`$?]','q32'), # * character final state 
+        ('q31',r'\=', 'q33'),
+        ('q31',r'[^`$?]', 'q32'), # ** character final state 
+        ('q33',r'[^`$?]', 'q32'), # *= or ** = character final state 
     ]
 
     states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
@@ -193,7 +188,7 @@ def main():
             'q31','q32','q33','q34','q35','q36','q37','q38','q39','q40',
             'q41','q42','q43','q44','q45','q46','q47','q48'}
     initial_state = 'q0'
-    accepting_states = {'q10','q11','q13','q14','q15','q17', 'q19', 'q21','q23','q25','q27','q28','q30','q34','q36','q44'}
+    accepting_states = {'q5','q6','q12','q17','q19','q22','q26', 'q29', 'q32'}
     afd = automata.Automaton(states, alphabet, initial_state, accepting_states, transitions)
 
     # Example usage:
