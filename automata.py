@@ -53,9 +53,11 @@ class Automaton:
     def counter(self, symbol):
         if symbol == '\n':
             self.row += 1
-            self.column = 1
+            self.column = 0
+            print('colum reset')
         else:
             self.column += 1
+            print('colum plus')
 
     def run(self, input_list):
         
@@ -68,8 +70,8 @@ class Automaton:
             print('symbol: ' + symbol)
 
             if not self.alphabet.match(symbol):
-                self.error_tokenizer(self.row,self.column)
-                print('Lexical error at row:', self.row, 'column:', self.column)
+                self.error_tokenizer(self.row,self.column + 1 )
+                print('Lexical error at row:', self.row, 'column:', self.column + 1 )
                 return False
 
         
@@ -100,6 +102,8 @@ class Automaton:
             if index == len(input_list) - 1:
                 print('entre')
                 expression = expression[:-1]
+                print(expression)
+                print('pene' + str(input_list[index:]))
                 self.tokenizer(expression, expression_start_row, expression_start_column,current_state)
                 return True
             
@@ -124,10 +128,9 @@ class Automaton:
                     return input_list[index:]
 
     def error_tokenizer(self, start_row, start_column):
-        self.token_list.append((start_row, start_column))
+        self.token_list.append((start_row, start_column ))
     
     def tokenizer(self, expression, start_row, start_column, finalState):
-        # Implement your tokenizer logic here
         key_words= [ 
         'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
         'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 
@@ -184,7 +187,7 @@ class Automaton:
             tipo_token = "Id"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
-        elif finalState in ['q19', 'q17', 'q21', 'q23', 'q25', 'q28', 'q29','q27','q10']:
+        elif finalState in ['q19', 'q17', 'q21', 'q23', 'q25', 'q28','q27','q10']:
             if expression in symbols:
                 tipo_token = symbols[expression]
                 self.token_list.append((tipo_token, start_row, start_column))
@@ -205,8 +208,11 @@ class Automaton:
             tipo_token = "tk_imaginary"
             self.token_list.append((tipo_token, expression, start_row, start_column))
 
+        elif finalState == 'q44':
+            tipo_token = "tk_string"
+            self.token_list.append((tipo_token, expression, start_row, start_column))
+
         else:
-            self.column -= 1
             return 
 
     

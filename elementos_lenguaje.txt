@@ -54,6 +54,7 @@ _variable(hecho)
 cientifico NEGARTIVOS()
 modularizar()
 Errores lexicos especiales
-$       ?      `           (cumplido) (revisar en string) 
+$       ?      `           (cumplido) (revisar en string) (revisar col)
 2.3.3. Reserved classes of identifiers (revisar, parcialmente incluido)
 2.4.3. f-strings (revisar)
+Decoradores (revisar)
