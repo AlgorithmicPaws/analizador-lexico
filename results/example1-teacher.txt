@@ -77,6 +77,7 @@
 <tk_colon,15,34>
 <return,16,9>
 <tk_string,"moo",16,16>
+<tk_string,'?',17,1>
 <Id,c,18,1>
 <tk_colon,18,2>
 <Id,Animal,18,3>

@@ -97,7 +97,7 @@ class Automaton:
                 self.error_tokenizer(self.row,self.column)
                 print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
-            if index == len(input_list) - 1:
+            if index == len(input_list) -1:
                 expression = expression[:-1]
                 print(expression)
                 print('Subcadena' + str(input_list[index:]))
@@ -124,10 +124,10 @@ class Automaton:
     def error_tokenizer(self, start_row, start_column):
         self.token_list.append((start_row, start_column ))
     
-    def tokenizer(self, expression, start_row, start_column, finalState):
-        key_words= [ 
-        'self','False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
-        'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 
+    def tokenizer(self, expression, start_row, start_column, final_state):
+        keywords= [ 
+        'case','match', 'self','False', 'None', 'True', 'and', 'as', 'assert', 'async','await',
+        'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 
         'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not',  
         'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield', 
         'abs', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'ceil', 
@@ -170,40 +170,28 @@ class Automaton:
         '!': 'tk_exclamation'
         }   
         
-        if finalState == 'q5':
-            tipo_token = "tk_integer"
-            self.token_list.append((tipo_token, expression, start_row, start_column))
-
-        elif finalState == 'q6':
-            tipo_token = "tk_float"
-            self.token_list.append((tipo_token, expression, start_row, start_column))
-
-        elif finalState == 'q12':
-            tipo_token = "tk_cientific"
-            self.token_list.append((tipo_token, expression, start_row, start_column))
-        
-        elif finalState == 'q17':
-            tipo_token = "tk_imaginary"
-            self.token_list.append((tipo_token, expression, start_row, start_column))
-
-        elif finalState == 'q22':
-            tipo_token = "tk_string"
-            self.token_list.append((tipo_token, expression, start_row, start_column))
-        
-        elif (finalState == 'q19'): 
-            if (expression in key_words):
-                self.token_list.append((expression, start_row, start_column))
-            else: 
-                tipo_token = "Id"
-                self.token_list.append((tipo_token, expression, start_row, start_column))
-        
-        elif finalState in ['q29','q32']:
-            if expression in symbols:
-                tipo_token = symbols[expression]
-                self.token_list.append((tipo_token, start_row, start_column))
+        # Determine token type based on final state
+        if final_state == 'q5' or final_state == 'q12':
+            token_type = "tk_integer"
+        elif final_state == 'q6' or  final_state == 'q52':
+            token_type = "tk_float"
+        elif final_state == 'q17':
+            token_type = "tk_imaginary"
+        elif final_state == 'q22':
+            token_type = "tk_string"
+        elif final_state in ['q19', 'q29', 'q32']:
+            # Check for keywords, symbols, or identifiers
+            if expression in keywords:
+                token_type = expression
+            elif expression in symbols:
+                token_type = symbols[expression]
+            else:
+                token_type = "Id"
         else:
-            return 
-
+            return
+    
+        # Add token to token list
+        self.token_list.append((token_type, expression, start_row, start_column))
     
 
 

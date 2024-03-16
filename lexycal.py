@@ -105,7 +105,7 @@ def main():
     
     transitions = [
         #Numeros 
-        ('q0', r'\d', 'q1'),
+        ('q0', r'[1-9]', 'q1'),
         ('q1', r'\d', 'q1'),
         ('q1', r'[eE]', 'q10'),
         ('q1', r'_', 'q3'),
@@ -113,7 +113,7 @@ def main():
         ('q1', r'[jJ]', 'q16'),
         ('q1', r'[^0-9eEjJ._]', 'q5'),# Integer final state
         ('q2', r'\d', 'q14'),
-        ('q2', r'[eE]', 'q10'),
+        ('q2', r'[eE]', 'q50'),
         ('q2', r'[jJ]', 'q16'),
         ('q2', r'[^0-9eEjJ_]', 'q6'), # Float int. final state
         ('q3', r'\d', 'q4'),
@@ -129,24 +129,44 @@ def main():
         ('q7', r'[^0-9eEjJ_]', 'q6'), # Float _int. final state
         ('q8', r'\d', 'q8'),
         ('q8', r'_', 'q9'),
-        ('q8', r'[eE]', 'q10'),
+        ('q8', r'[eE]', 'q50'),
         ('q8', r'[jJ]', 'q16'),
         ('q8', r'[^0-9eEjJ_]', 'q6'), # Float (._dec) o (_._dec) final state
         ('q9', r'\d', 'q8'),
-        ('q10', r'[\d_]', 'q11'),
+        ('q10', r'[\d]', 'q11'),
         ('q10', r'-', 'q13'),
         ('q11', r'\d', 'q11'),
         ('q11', r'_', 'q15'),
         ('q11', r'[jJ]', 'q16'),
-        ('q11', r'[^0-9jJ_]', 'q12'), # Basic/Float cientific final state 
+        ('q11', r'[^0-9jJ_]', 'q12'), # Int cientific final state 
         ('q13', r'\d', 'q11'),
         ('q14', r'_', 'q9'),
         ('q14', r'\d', 'q14'),
-        ('q14', r'[eE]', 'q10'),
+        ('q14', r'[eE]', 'q50'),
         ('q14', r'[jJ]', 'q16'),
         ('q14', r'[^0-9eEjJ_]', 'q6'), # Float final state
         ('q15', r'\d', 'q11'),
-        ('q16', r'[^0-9_]', 'q17'),
+        ('q16', r'[^0-9_]', 'q17'), # Imaginary final state
+        ('q50', r'[\d]', 'q51'),
+        ('q50', r'-', 'q53'),
+        ('q51', r'\d', 'q51'),
+        ('q51', r'_', 'q55'),
+        ('q51', r'[jJ]', 'q16'),
+        ('q51', r'[^0-9jJ_]', 'q52'), # Float cientific final state 
+        ('q53', r'\d', 'q51'),
+        ('q55', r'\d', 'q51'),
+        # hexa, oct, bin
+        ('q0',r'0', 'q56'),
+        ('q56',r'/d', 'q1'),
+        ('q56',r'[oO]', 'q57'),
+        ('q56',r'[xX]', 'q58'),
+        ('q56',r'[bB]', 'q59'),
+        ('q57',r'[0-7]', 'q57'),
+        ('q57',r'[^0-7]', 'q5'),# Integer oct final state
+        ('q58',r'[0-9a-fA-F]', 'q58'),
+        ('q58',r'[^0-9a-fA-F]', 'q5'),# Integer hexa final state
+        ('q59',r'[0-1]', 'q59'),
+        ('q59',r'[^0-1]', 'q5'),# Integer bin final state
         #keywords/id
         ('q0', r'[_a-zA-Z]', 'q18'),
         ('q18', r'[\w]', 'q18'),
@@ -215,18 +235,22 @@ def main():
         ('q0',r'\s', 'q48'),
         ('q0',r'\n', 'q48'),
         ('q48',alphabet, 'q49'),
-    ]
+        
+    ]   
     states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
             'q11','q12','q13', 'q14','q15', 'q16','q17','q18','q19','q20',
             'q21','q22','q23','q24','q25','q26','q27','q28','q29','q30',
             'q31','q32','q33','q34','q35','q36','q37','q38','q39','q40',
-            'q41','q42','q43','q44','q45','q46','q47','q48','q49'}
+            'q41','q42','q43','q44','q45','q46','q47','q48','q49','q50',
+            'q51','q52','q53','q54','q55','q56','q57','q58','q59','q60'}
     initial_state = 'q0'
-    accepting_states = {'q5','q6','q12','q17','q19','q22','q26', 'q29', 'q32' , 'q49'}
+    accepting_states = {'q5','q6','q12','q17','q19','q22','q26', 'q29', 'q32', 'q49', 'q52'}
     afd = automata.Automaton(states, alphabet, initial_state, accepting_states, transitions)
 
     filename = input("Enter the filename: ")
     file_lines = read_file(filename)
+    file_lines[-1] = ''.join([file_lines[-1], ' '])
+    print(file_lines)
     if file_lines is not None:  
         for line in file_lines:
             try:
