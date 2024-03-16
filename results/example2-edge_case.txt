@@ -1,0 +1,5 @@
+<tk_float,2.5598055,1,1>
+<Id,while3,1,10>
+<tk_not_equal_to,1,16>
+<tk_integer,88,1,18>
+>>> lexical error,1,20>

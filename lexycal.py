@@ -22,8 +22,7 @@ def read_file(file_name):
         
         current_dir = os.path.dirname(os.path.abspath(__file__))
         with open(os.path.join(current_dir, 'examples', file_name), 'r') as file:
-            return file.readlines()
-        
+            return file.readlines()   
     except FileNotFoundError:
         print(f"Error: File '{file_name}' not found.")
         return []
@@ -72,7 +71,9 @@ def save_tokens_to_file(tokens, file_name):
     """
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        with open(os.path.join(current_dir, 'results', file_name), 'w') as file:
+        base_name = os.path.splitext(file_name)[0]
+        output_file_name = base_name + ".txt"
+        with open(os.path.join(current_dir, 'results', output_file_name), 'w') as file:
             for token in tokens:
                 formatted_token = format_token(token)
                 file.write(formatted_token)
@@ -84,28 +85,24 @@ def save_tokens_to_file(tokens, file_name):
     except ValueError as e:
         print(f"Error: {e}")
 
+def create_regex_from_list(characters):
+    regex = '|'.join(re.escape(character) for character in characters)
+    return regex
 
 def main():
     """
     Main function to execute the program.
     """
-    def create_regex_from_list(characters):
-        regex = '|'.join(re.escape(character) for character in characters)
-        return regex
-    
     esp_characters_list = ['?','$','`',"'",'"','#','/','%','@','<','>','&','|','^','~',':','=','!','(',')','[',']','{','}',';',':','.','-','+','*',',']
     unique_characters_list = ['(',')','[',']','{','}',';','~',',']
     expetion_characters_list = ['?','$','`']
     initial_compouse_character_list = ['%','@','&','|','^',':','=','!','+']
     regex_esp_characters =  create_regex_from_list(esp_characters_list)
-
     alphabet = re.compile(r'[\w\s]|[' + regex_esp_characters + ']')
     unique_character = re.compile(r'[' + create_regex_from_list(unique_characters_list) + ']')
     initial_compouse_character = re.compile(r'[' + create_regex_from_list(initial_compouse_character_list) + ']')
     expetion_characters = re.compile(r'[' + create_regex_from_list(expetion_characters_list) + ']')
-    #d digits
-    #s spaces and tabs
-    #w letters, digits, and _
+    
     transitions = [
         #Numeros 
         ('q0', r'\d', 'q1'),
@@ -114,46 +111,46 @@ def main():
         ('q1', r'_', 'q3'),
         ('q1', r'\.', 'q2'),
         ('q1', r'[jJ]', 'q16'),
-        ('q1', r'[^0-9eEjJ._?$`]', 'q5'),# Integer final state
+        ('q1', r'[^0-9eEjJ._]', 'q5'),# Integer final state
         ('q2', r'\d', 'q14'),
         ('q2', r'[eE]', 'q10'),
         ('q2', r'[jJ]', 'q16'),
-        ('q2', r'[^0-9eEjJ_?$`]', 'q6'), # Float int. final state
+        ('q2', r'[^0-9eEjJ_]', 'q6'), # Float int. final state
         ('q3', r'\d', 'q4'),
         ('q4', r'\d', 'q4'),
         ('q4', r'_', 'q3'),
         ('q4', r'[eE]', 'q10'),
         ('q4', r'\.', 'q7'),
         ('q4', r'[jJ]', 'q16'),
-        ('q4', r'[^0-9eEjJ._?$`]', 'q5'), # Integer_ final state
+        ('q4', r'[^0-9eEjJ._]', 'q5'), # Integer_ final state
         ('q7', r'\d', 'q8'),
         ('q7', r'[eE]', 'q10'),
         ('q7', r'[jJ]', 'q16'),
-        ('q7', r'[^0-9eEjJ_?$`]', 'q6'), # Float _int. final state
+        ('q7', r'[^0-9eEjJ_]', 'q6'), # Float _int. final state
         ('q8', r'\d', 'q8'),
         ('q8', r'_', 'q9'),
         ('q8', r'[eE]', 'q10'),
         ('q8', r'[jJ]', 'q16'),
-        ('q8', r'[^0-9eEjJ_?$`]', 'q6'), # Float (._dec) o (_._dec) final state
+        ('q8', r'[^0-9eEjJ_]', 'q6'), # Float (._dec) o (_._dec) final state
         ('q9', r'\d', 'q8'),
         ('q10', r'[\d_]', 'q11'),
         ('q10', r'-', 'q13'),
         ('q11', r'\d', 'q11'),
         ('q11', r'_', 'q15'),
         ('q11', r'[jJ]', 'q16'),
-        ('q11', r'[^0-9jJ_?$`]', 'q12'), # Basic/Float cientific final state 
+        ('q11', r'[^0-9jJ_]', 'q12'), # Basic/Float cientific final state 
         ('q13', r'\d', 'q11'),
         ('q14', r'_', 'q9'),
         ('q14', r'\d', 'q14'),
         ('q14', r'[eE]', 'q10'),
         ('q14', r'[jJ]', 'q16'),
-        ('q14', r'[^0-9eEjJ_?$`]', 'q6'), # Float final state
+        ('q14', r'[^0-9eEjJ_]', 'q6'), # Float final state
         ('q15', r'\d', 'q11'),
-        ('q16', r'[^0-9_?$`]', 'q17'),
+        ('q16', r'[^0-9_]', 'q17'),
         #keywords/id
         ('q0', r'[_a-zA-Z]', 'q18'),
         ('q18', r'[\w]', 'q18'),
-        ('q18', r'[^\w`$?]', 'q19'), #Id/keyword final state
+        ('q18', r'[^\w]', 'q19'), #Id/keyword final state
         #strings
         ('q0', r'\'', 'q20'),
         ('q0', r'\"', 'q23'),
@@ -170,81 +167,81 @@ def main():
         #Compouse characters
         ('q0',initial_compouse_character, 'q27'),
         ('q27',r'\=', 'q28'),
-        ('q27',r'[^=`$?]','q29'), # Initial caracter final state
-        ('q28',r'[^`$?]','q29'), # Initial caracter = final state
+        ('q27',r'[^=]','q29'), # Initial caracter final state
+        ('q28',alphabet,'q29'), # Initial caracter = final state
         #Duplicate chatacters
         ('q0',r'\*', 'q30'),
         ('q30',r'\*', 'q31'),
         ('q30',r'\=', 'q33'),
-        ('q30',r'[^=`$?]','q32'), # * character final state 
+        ('q30',alphabet,'q32'), # * character final state 
         ('q31',r'\=', 'q33'),
-        ('q31',r'[^`$?]', 'q32'), # ** character final state 
-        ('q33',r'[^`$?]', 'q32'), # *= or ** = character final state 
+        ('q31',alphabet, 'q32'), # ** character final state 
+        ('q33',alphabet, 'q32'), # *= or ** = character final state 
         ('q0',r'\>', 'q34'),
         ('q34',r'\>', 'q35'),
         ('q34',r'\=', 'q36'),
-        ('q34',r'[^=`$?]','q32'), # > character final state 
+        ('q34',r'[^=]','q32'), # > character final state 
         ('q35',r'\=', 'q36'),
-        ('q35',r'[^`$?]', 'q32'), # >> character final state 
-        ('q36',r'[^`$?]', 'q32'), # >= or >>= character final state 
+        ('q35',alphabet, 'q32'), # >> character final state 
+        ('q36',alphabet, 'q32'), # >= or >>= character final state 
         ('q0',r'\<', 'q37'),
         ('q37',r'\<', 'q38'),
         ('q37',r'\=', 'q39'),
-        ('q37',r'[^=`$?]','q32'), # < character final state 
+        ('q37',r'[^=]','q32'), # < character final state 
         ('q38',r'\=', 'q39'),
-        ('q38',r'[^`$?]', 'q32'), # << character final state 
-        ('q39',r'[^`$?]', 'q32'), # <= or <<= character final state 
+        ('q38',alphabet, 'q32'), # << character final state 
+        ('q39',alphabet, 'q32'), # <= or <<= character final state 
         ('q0',r'\/', 'q40'),
         ('q40',r'\/', 'q41'),
         ('q40',r'\=', 'q42'),
-        ('q40',r'[^=`$?]','q32'), # / character final state 
+        ('q40',r'[^=]','q32'), # / character final state 
         ('q41',r'\=', 'q42'),
-        ('q41',r'[^`$?]', 'q32'), # // character final state 
-        ('q42',r'[^`$?]', 'q32'), # /= or //= character final state 
+        ('q41',alphabet, 'q32'), # // character final state 
+        ('q42',alphabet, 'q32'), # /= or //= character final state 
         #unique caracter operator
         ('q0',unique_character, 'q43'),
-        ('q43',r'[^`$?]','q32'), # unique character final state 
+        ('q43',alphabet,'q32'), # unique character final state 
         # - exception 
         ('q0',r'\-', 'q44'),
         ('q44',r'\>', 'q46'),
         ('q44',r'\=', 'q46'),
-        ('q44',r'[^=`$?]','q32'), # - character final state
-        ('q46',r'[^`$?]', 'q32'), # -> or -= character final state 
+        ('q44',r'[^=]','q32'), # - character final state
+        ('q46',alphabet, 'q32'), # -> or -= character final state 
         # .
         ('q0',r'\.', 'q47'),
         ('q47',r'\d', 'q2'),
-        ('q47',r'[^0-9`$?]', 'q32'), # . character final state
+        ('q47',r'[^0-9]', 'q32'), # . character final state
         # spaces and new line
         ('q0',r'\s', 'q48'),
         ('q0',r'\n', 'q48'),
-        ('q48',r'[^`$?]', 'q49'),
+        ('q48',alphabet, 'q49'),
     ]
-
     states = {'q0','q1','q2','q3','q4','q5','q6', 'q7','q8','q9','q10',
             'q11','q12','q13', 'q14','q15', 'q16','q17','q18','q19','q20',
             'q21','q22','q23','q24','q25','q26','q27','q28','q29','q30',
             'q31','q32','q33','q34','q35','q36','q37','q38','q39','q40',
-            'q41','q42','q43','q44','q45','q46','q47','q48'}
+            'q41','q42','q43','q44','q45','q46','q47','q48','q49'}
     initial_state = 'q0'
     accepting_states = {'q5','q6','q12','q17','q19','q22','q26', 'q29', 'q32' , 'q49'}
     afd = automata.Automaton(states, alphabet, initial_state, accepting_states, transitions)
 
-    # Example usage:
-
-    file_name = 'tokens.txt'
     filename = input("Enter the filename: ")
     file_lines = read_file(filename)
-    print(file_lines)
-    if file_lines:
-        print("File content:")
+    if file_lines is not None:  
         for line in file_lines:
-            result = afd.rerun(list(line))
-            if result == False:
-                print(1)
-                break
+            try:
+                result = afd.rerun(list(line))
+                if result == False:
+                    break
+            except Exception as e:  
+                print(f"Lexical error encountered while processing line: {line[:-1]}")
+                print(f"Error: {e}")
+                break  
     else:
         print("Unable to read the file.")
-    save_tokens_to_file(afd.token_list, file_name)
+
+    if afd.token_list:  
+        save_tokens_to_file(afd.token_list, filename)
 
 if __name__ == "__main__":
     main()

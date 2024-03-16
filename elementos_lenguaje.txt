@@ -10,15 +10,15 @@ match      case       type       _
 
 
 
-- falta mirar lo de math, case, type 
+- falta mirar lo de math, case, type (hecho)
 
-- falta mirar lo de "error" 
+- falta mirar lo de "error"  (hecho)
 
 - falta mirar si ponemos mas lbrerías 
 
 
 
-Simbolos especiales
+Simbolos especiales (hecho)
 +       -       *       **      /       //      %      @
 <<      >>      &       |       ^       ~       :=
 <       >       <=      >=      ==      !=
