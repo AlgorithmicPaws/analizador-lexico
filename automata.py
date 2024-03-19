@@ -14,8 +14,8 @@ class Automaton:
         alphabet (list): List of symbols in the alphabet of the DFA.
         initial_state (str): The initial state of the DFA.
         accepting_states (list): List of accepting states in the DFA.
-        transitions (dict): Dictionary representing transitions in the DFA. 
-                            Keys are tuples (current_state, symbol) and values are the next state.
+        transitions (list): List of tuplets representing transitions in the DFA. 
+                            
 
         Attributes:
         states (list): List of states in the DFA.
@@ -26,7 +26,6 @@ class Automaton:
         row (int): Current row index for processing input tokens.
         column (int): Current column index for processing input tokens.
         token_list (list): List to store processed tokens.
-        result (bool): Result of DFA execution, initialized as False.
         """
         self.states = states
         self.alphabet = alphabet
@@ -36,7 +35,18 @@ class Automaton:
         self.row = 1
         self.column = 0
         self.token_list = []
-        self.result = False
+
+    def counter(self, symbol):
+        """
+        Process the symbol to count rows and colums
+        """
+        if symbol == '\n':
+            self.row += 1
+            self.column = 0
+        elif symbol == '\t':
+            self.column += 4
+        else:
+            self.column += 1
 
     def rerun(self, input_string):
         """
@@ -50,39 +60,23 @@ class Automaton:
                 return False
             else:
                 actual_input = self.run(actual_input)     
-    def counter(self, symbol):
-        if symbol == '\n':
-            self.row += 1
-            self.column = 0
-            print('colum reset')
-        else:
-            self.column += 1
-            print('colum plus')
 
     def run(self, input_list):
-        
         current_state = self.initial_state
         expression = ''
-        print(input_list)
         for index in range(len(input_list)):
             symbol = input_list[index]
-            print('symbol: ' + symbol)
-
             self.counter(symbol)
-
             next_state = None
             for transition in self.transitions:
                 if transition[0] == current_state and re.match(transition[1], symbol):
                     state = transition[2]
-                    print('state' + state)
                     expression += symbol
                     if len(expression) == 1:
-                        print('cata')
                         expression_start_row = self.row
                         expression_start_column = self.column
                     next_state = state
                     break
-            
             current_state = next_state
 
             if not self.alphabet.match(symbol):
@@ -92,19 +86,14 @@ class Automaton:
                     self.error_tokenizer(self.row,self.column + 1 )
                 else:
                     self.error_tokenizer(self.row,self.column)
-                print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
             
             if next_state is None:
-                print(expression)
-                print(current_state)
                 self.error_tokenizer(self.row,self.column)
-                print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
+            
             if index == len(input_list) -1:
                 expression = expression[:-1]
-                print(expression)
-                print('Subcadena' + str(input_list[index:]))
                 self.tokenizer(expression, expression_start_row, expression_start_column,current_state)
                 return True
             
@@ -116,13 +105,11 @@ class Automaton:
                     if symbol == '\n':
                         self.row-= 1  
                     expression = ''
-                    print('Subcadena' + str(input_list[index:]))
                     return input_list[index:]
                 else:
                     self.tokenizer(expression, expression_start_row, expression_start_column, current_state)
                     expression = ''
                     current_state = self.initial_state
-                    print('Subcadena' + str(input_list[index:]))
                     return input_list[index:]
 
     def error_tokenizer(self, start_row, start_column):
@@ -199,7 +186,7 @@ class Automaton:
             else:
                 token_type = "Id"
                 self.token_list.append((token_type, expression, start_row, start_column))
-
+ 
         else:
             return
     

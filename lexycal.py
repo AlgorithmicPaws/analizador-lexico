@@ -102,7 +102,6 @@ def main():
         alphabet = re.compile(r'[\w\s]|[' + regex_esp_characters + ']')
         unique_character = re.compile(r'[' + create_regex_from_list(unique_characters_list) + ']')
         initial_compouse_character = re.compile(r'[' + create_regex_from_list(initial_compouse_character_list) + ']')
-        expetion_characters = re.compile(r'[' + create_regex_from_list(expetion_characters_list) + ']')
         
         transitions = [
             #Numeros 
@@ -234,7 +233,8 @@ def main():
             ('q47',r'\d', 'q2'),
             ('q47',r'[^0-9]', 'q32'), # . character final state
             # spaces and new line
-            ('q0',r'\s', 'q48'),
+            ('q0',r' ', 'q48'),
+            ('q0',r'\t', 'q48'),
             ('q0',r'\n', 'q48'),
             ('q48',alphabet, 'q49'),
             
@@ -252,7 +252,6 @@ def main():
         filename = input("Enter the filename: ")
         file_lines = read_file(filename)
         file_lines[-1] = ''.join([file_lines[-1], ' '])
-        print(file_lines)
         if file_lines is not None:  
             for line in file_lines:
                 try:
@@ -260,7 +259,7 @@ def main():
                     if result == False:
                         break
                 except Exception as e:  
-                    print(f"Lexical error encountered while processing line: {line[:-1]}")
+                    #print(f"Lexical error encountered while processing line: {line[:-1]}")
                     print(f"Error: {e}")
                     break  
         else:
