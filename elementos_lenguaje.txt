@@ -57,5 +57,5 @@ $       ?      `           (cumplido) (revisar en string)
 modularizar()
 2.4.3. f-strings (revisar)
 Decoradores (revisar)
-Hexadecimal y los otros(revisar)
-mandar cientificos a float o int
+Hexadecimal y los otros(hecho)
+mandar cientificos a float o int (hecho)

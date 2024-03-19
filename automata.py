@@ -63,7 +63,7 @@ class Automaton:
         
         current_state = self.initial_state
         expression = ''
-        
+        print(input_list)
         for index in range(len(input_list)):
             symbol = input_list[index]
             print('symbol: ' + symbol)
@@ -167,31 +167,37 @@ class Automaton:
         '/=': 'tk_divide_equal', '//=': 'tk_double_divide_equal', '%=': 'tk_modulus_equal',
         '@=': 'tk_at_equal', '&=': 'tk_and_equal', '|=': 'tk_or_equal', '^=': 'tk_xor_equal',
         '>>=': 'tk_right_shift_equal', '<<=': 'tk_left_shift_equal', '**=': 'tk_double_asterisk_equal',
-        '!': 'tk_exclamation'
+        '!': 'tk_exclamation', '\\': 'tk_backslash',
         }   
         
         # Determine token type based on final state
         if final_state == 'q5' or final_state == 'q12':
             token_type = "tk_integer"
+            self.token_list.append((token_type, expression, start_row, start_column))
         elif final_state == 'q6' or  final_state == 'q52':
             token_type = "tk_float"
+            self.token_list.append((token_type, expression, start_row, start_column))
         elif final_state == 'q17':
             token_type = "tk_imaginary"
+            self.token_list.append((token_type, expression, start_row, start_column))
         elif final_state == 'q22':
             token_type = "tk_string"
+            self.token_list.append((token_type, expression, start_row, start_column))
+
         elif final_state in ['q19', 'q29', 'q32']:
             # Check for keywords, symbols, or identifiers
             if expression in keywords:
                 token_type = expression
+                self.token_list.append((token_type, start_row, start_column))
             elif expression in symbols:
                 token_type = symbols[expression]
+                self.token_list.append((token_type, start_row, start_column))
             else:
                 token_type = "Id"
+                self.token_list.append((token_type, expression, start_row, start_column))
+
         else:
             return
-    
-        # Add token to token list
-        self.token_list.append((token_type, expression, start_row, start_column))
     
 
 
