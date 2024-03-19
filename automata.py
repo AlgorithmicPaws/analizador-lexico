@@ -89,7 +89,9 @@ class Automaton:
                 expression = expression[:-1]
                 if len(expression) > 0:
                     self.tokenizer(expression, expression_start_row, expression_start_column, current_state)
-                self.error_tokenizer(self.row,self.column + 1 )
+                    self.error_tokenizer(self.row,self.column + 1 )
+                else:
+                    self.error_tokenizer(self.row,self.column)
                 print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
             
