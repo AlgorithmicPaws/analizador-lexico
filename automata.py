@@ -77,6 +77,7 @@ class Automaton:
                     print('state' + state)
                     expression += symbol
                     if len(expression) == 1:
+                        print('cata')
                         expression_start_row = self.row
                         expression_start_column = self.column
                     next_state = state
@@ -86,7 +87,8 @@ class Automaton:
 
             if not self.alphabet.match(symbol):
                 expression = expression[:-1]
-                self.tokenizer(expression, expression_start_row, expression_start_column, current_state)
+                if len(expression) > 0:
+                    self.tokenizer(expression, expression_start_row, expression_start_column, current_state)
                 self.error_tokenizer(self.row,self.column + 1 )
                 print('Lexical error at row:', self.row, 'column:', self.column)
                 return False
